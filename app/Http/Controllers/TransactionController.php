@@ -139,12 +139,26 @@ class TransactionController extends Controller {
 
     public function action_remove($id) {
         $transaction = Transaction::find($id);
-        $transaction->delete();
+
+        if($transaction->recurring_id) {
+            $recurring_transactions = Transaction::where('recurring_id', $transaction->recurring_id)->get();
+            $deleted_ids = [];
+
+            foreach($recurring_transactions as $transaction) {
+                array_push($deleted_ids, $transaction->id);
+                $transaction->delete();
+            }
+
+            $return_ids = $deleted_ids;
+        } else {
+            $transaction->delete();
+            $return_ids = [$id];
+        }
 
         return response(json_encode([
             'status' => true,
             'data' => [
-                'transaction_id' => $id
+                'transaction_ids' => $return_ids
             ]
         ]));
     }
