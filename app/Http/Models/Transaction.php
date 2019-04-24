@@ -10,6 +10,6 @@ class Transaction extends Model {
     ];
 
     public function recurring() {
-        return $this->hasOne('App\Http\Models\Recurring');
+        return $this->belongsTo('App\Http\Models\Recurring', 'recurring_id');
     }
 }

@@ -170,7 +170,8 @@ class TransactionController extends Controller {
 
     public function view($start, $end) {
         $end = $end .' 23:59:59';
-        $transactions = Transaction::whereRaw('occurred_at > ? AND occurred_at < ?', [$start, $end])->orderBy('occurred_at', 'desc')->get();
+        $transactions = Transaction::with('recurring')->whereRaw('occurred_at > ? AND occurred_at < ?', [$start, $end])->orderBy('occurred_at', 'desc')->get();
+
         return response(json_encode($transactions));
     }
 }
