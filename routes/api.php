@@ -1,5 +1,9 @@
 <?php
 
+// header('Access-Control-Allow-Origin: http://budget.thomaskbird.com');
+header('Access-Control-Allow-Origin: http://localhost:8009');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, User-Agent");
+
 use Illuminate\Http\Request;
 
 /*
@@ -27,6 +31,9 @@ route::get('tags/{id}', ['as' => 'single', 'uses' => 'TagController@single']);
 route::post('tags/create', ['as' => 'action_create', 'uses' => 'TagController@action_create']);
 
 // Transaction routes
-route::get('transactions', ['as' => 'view', 'uses' => 'TransactionController@view']);
-route::get('transactions/{id}', ['as' => 'single', 'uses' => 'TransactionController@single']);
 route::post('transactions/create', ['as' => 'action_create', 'uses' => 'TransactionController@action_create']);
+route::get('transactions/remove/{id}', ['as' => 'action_remove', 'uses' => 'TransactionController@action_remove']);
+route::get('transactions/{id}', ['as' => 'single', 'uses' => 'TransactionController@single']);
+route::get('transactions/{start?}/{end?}', ['as' => 'view', 'uses' => 'TransactionController@view']);
+
+route::get('occurences/testing/{type}/{start_at}/{end_at}', ['as' => 'test_occurences', 'uses' => 'TransactionController@test_occurences']);

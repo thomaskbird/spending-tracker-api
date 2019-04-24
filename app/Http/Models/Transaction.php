@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model {
     protected $fillable = [
-        'name', 'slug', 'description', 'amount', 'type'
+        'recurring_id', 'submitted_by', 'title', 'description', 'amount', 'type', 'status', 'occurred_at'
     ];
+
+    public function recurring() {
+        return $this->hasOne('App\Http\Models\Recurring');
+    }
 }
