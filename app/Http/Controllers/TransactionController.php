@@ -11,14 +11,6 @@ class TransactionController extends Controller {
     public function action_create(Request $request) {
         $input = $request->except('_token');
 
-//        title: formData.title,
-//        description: formData.description,
-//        amount: formData.amount,
-//        type: formData.type
-
-//        recurring_type: formData.recurring_type,
-//        ends_at: formData.ends_at
-
         if(isset($input['end_at'])) {
             $validator = Validator::make($input, [
                 'title' => 'required',
@@ -59,13 +51,10 @@ class TransactionController extends Controller {
 
                 unset($input['recurring_type'], $input['end_at']);
 
-                // todo: Create the function that will create all of the occurences
-                $transaction = Transaction::create($input);
                 $response = [
                     'status' => true,
                     'data' => [
                         'recurring' => $recurring,
-                        'transaction' => $transaction,
                         'occurences' => $created_occurences
                     ]
                 ];
@@ -81,6 +70,84 @@ class TransactionController extends Controller {
 
             return response(json_encode($response));
         }
+    }
+
+    public function action_edit(Request $request, $id) {
+        $input = $request->except('_token');
+
+        if(isset($input['end_at'])) {
+            $validator = Validator::make($input, [
+                'title' => 'required',
+                'amount' => 'required',
+                'type' => 'required',
+                'recurring_type' => 'required',
+                'start_at' => 'required',
+                'end_at' => 'required'
+            ]);
+        } else {
+            $validator = Validator::make($input, [
+                'title' => 'required',
+                'amount' => 'required',
+                'type' => 'required'
+            ]);
+        }
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            if(!isset($input['occurred_at'])) {
+                $input['occurred_at'] = isset($input['start_at']) ? $input['start_at'] : date('Y-m-d H:i:s');
+            }
+
+            // todo: We don't need to create we need to update below
+            if(isset($input['end_at'])) {
+                $recurring = Recurring::find($input['recurring_id']);
+                $recurring->recurring_type = $input['recurring_type'];
+                $recurring->start_at = $input['start_at'];
+                $recurring->end_at = $input['end_at'];
+                $recurring->save();
+
+                $created_occurences = $this->create_occurences($recurring, $input);
+
+                unset($input['recurring_type'], $input['end_at']);
+
+                $response = [
+                    'status' => true,
+                    'data' => [
+                        'recurring' => $recurring,
+                        'occurences' => $created_occurences
+                    ]
+                ];
+            } else {
+                $transaction = $this->edit_individual_transaction($id, $input);
+                $response = [
+                    'status' => true,
+                    'data' => [
+                        'transaction' => $transaction
+                    ]
+                ];
+            }
+
+            return response(json_encode($response));
+        }
+    }
+
+    private $transactionEditableVals = ['submitted_by', 'title', 'description', 'amount', 'type', 'status', 'occurred_at'];
+    public function edit_individual_transaction($id, $newVals) {
+        $transaction = Transaction::find($id);
+
+        foreach($newVals as $key => $val) {
+            if(in_array($key, $this->transactionEditableVals)) {
+                $transaction->$key = $val;
+            }
+        }
+
+        $transaction->save();
+
+        return $transaction;
     }
 
     public function create_occurences($recurring, $transaction) {

@@ -32,6 +32,7 @@ route::post('tags/create', ['as' => 'action_create', 'uses' => 'TagController@ac
 
 // Transaction routes
 route::post('transactions/create', ['as' => 'action_create', 'uses' => 'TransactionController@action_create']);
+route::post('transactions/edit/{id}', ['as' => 'action_edit', 'uses' => 'TransactionController@action_edit']);
 route::get('transactions/remove/{id}', ['as' => 'action_remove', 'uses' => 'TransactionController@action_remove']);
 route::get('transactions/{id}', ['as' => 'single', 'uses' => 'TransactionController@single']);
 route::get('transactions/{start?}/{end?}', ['as' => 'view', 'uses' => 'TransactionController@view']);
