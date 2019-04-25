@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Recurring extends Model {
     protected $fillable = [
-        'recurring_type', 'start_at', 'end_at'
+        'user_id', 'recurring_type', 'start_at', 'end_at'
     ];
 
     public function transactions() {
