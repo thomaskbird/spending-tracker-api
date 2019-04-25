@@ -102,7 +102,6 @@ class TransactionController extends Controller {
                 $input['occurred_at'] = isset($input['start_at']) ? $input['start_at'] : date('Y-m-d H:i:s');
             }
 
-            // todo: We don't need to create we need to update below
             if(isset($input['end_at'])) {
                 $recurring = Recurring::find($input['recurring_id']);
                 $recurring->recurring_type = $input['recurring_type'];
@@ -110,6 +109,8 @@ class TransactionController extends Controller {
                 $recurring->end_at = $input['end_at'];
                 $recurring->save();
 
+                // todo: We don't need to create we need to update below
+                $delete_occurences = $this->delete_occurences($input['recurring_id']);
                 $created_occurences = $this->create_occurences($recurring, $input);
 
                 unset($input['recurring_type'], $input['end_at']);
@@ -118,7 +119,8 @@ class TransactionController extends Controller {
                     'status' => true,
                     'data' => [
                         'recurring' => $recurring,
-                        'occurences' => $created_occurences
+                        'occurences' => $created_occurences,
+                        'occurences_deleted' => $delete_occurences
                     ]
                 ];
             } else {
@@ -133,6 +135,18 @@ class TransactionController extends Controller {
 
             return response(json_encode($response));
         }
+    }
+
+    private function delete_occurences($id) {
+        $deleted_ids = [];
+        $occurences = Transaction::where('recurring_id', $id)->get();
+
+        foreach($occurences as $occurence) {
+            array_pull($deleted_ids, $occurence->id);
+            $occurence->delete();
+        }
+
+        return $deleted_ids;
     }
 
     private $transactionEditableVals = ['submitted_by', 'title', 'description', 'amount', 'type', 'status', 'occurred_at'];
