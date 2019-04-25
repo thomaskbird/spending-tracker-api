@@ -43,7 +43,7 @@ class TransactionController extends Controller {
             ]), 401);
         } else {
             if(!isset($input['occurred_at'])) {
-                $input['occurred_at'] = $input['start_at'];
+                $input['occurred_at'] = isset($input['start_at']) ? $input['start_at'] : date('Y-m-d H:i:s');
             }
 
             if(isset($input['end_at'])) {
