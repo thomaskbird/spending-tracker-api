@@ -53,6 +53,47 @@ class CredentialController extends Controller {
         }
     }
 
+    public function account_user_activate(Request $request, $activation_code) {
+        $input = $request->except('_token');
+
+        $validator = Validator::make($input, [
+            'first_name' => 'required',
+            'last_name' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            $activation_code = base64_decode($activation_code);
+            $activation_code_parts = explode('||', $activation_code);
+
+            $user = User::where('email', $activation_code_parts[0])->first();
+            $generated_code = base64_encode($activation_code_parts[0] .'||'. config('general.site_salt') .'||'. $activation_code_parts[2]);
+
+            if($generated_code === $user->activation_code) {
+                $user->status = 'active';
+                $user->first_name = $input['first_name'];
+                $user->last_name = $input['last_name'];
+                $user->save();
+
+                return response(json_encode([
+                    'status' => true,
+                    'data' => [
+                        'user' => $user
+                    ]
+                ]));
+            } else {
+                return response(json_encode([
+                    'status' => false,
+                    'errors' => ['Uh oh something went wrong please try again or contact an administrator']
+                ]), 401);
+            }
+        }
+    }
+
     public function recovery_password() {
 
     }

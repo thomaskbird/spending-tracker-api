@@ -34,6 +34,7 @@ route::post('budgets/{id}', ['as' => 'budget_edit', 'uses' => 'BudgetController@
 // Credential routes
 route::post('login', ['as' => 'action_login', 'uses' => 'CredentialController@action_login']);
 route::post('signup', ['as' => 'action_signup', 'uses' => 'CredentialController@action_signup']);
+route::post('activate/{activation_code}', ['as' => 'account_user_activate', 'uses' => 'CredentialController@account_user_activate']);
 
 // Tag routes
 route::get('tags', ['as' => 'view', 'uses' => 'TagController@view']);
