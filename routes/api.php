@@ -2,7 +2,7 @@
 
 // header('Access-Control-Allow-Origin: http://budget.thomaskbird.com');
 header('Access-Control-Allow-Origin: http://localhost:8009');
-header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, User-Agent");
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, User-Agent, authorization");
 
 use Illuminate\Http\Request;
 

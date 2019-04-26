@@ -4,13 +4,57 @@ use Illuminate\Http\Request;
 
 use App\Http\Models\User;
 
-use Illuminate\Support\Facades\Mail;
 use Hash;
+use Auth;
 use Validator;
+use Illuminate\Support\Facades\Mail;
 
 class CredentialController extends Controller {
-    public function action_login() {
+    public function action_login(Request $request) {
+        $input = $request->except('_token');
 
+        $validator = Validator::make($input, [
+            'email' => 'required',
+            'password' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            $user = User::where('email', $input['email'])->first();
+
+            if($user) {
+                if(Auth::attempt($input)) {
+                    $expiration = date('Y-m-d H:i:s', strtotime("+7 day"));
+                    $api_token = base64_encode(Auth::id() .'||'. $expiration);
+                    $user->api_token = $api_token;
+                    $user->save();
+
+                    unset($user->activation_code, $user->salt);
+
+                    return response(json_encode([
+                        'status' => true,
+                        'data' => [
+                            'user' => $user
+                        ]
+                    ]));
+
+                } else {
+                    return response(json_encode([
+                        'status' => false,
+                        'errors' => ['Uh oh your email and password didn\'t match!']
+                    ]), 401);
+                }
+            } else {
+                return response(json_encode([
+                    'status' => false,
+                    'errors' => ['Uh oh we can\'t find an account with that email']
+                ]), 401);
+            }
+        }
     }
 
     public function action_signup(Request $request) {
