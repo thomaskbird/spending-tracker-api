@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+
 use App\Http\Models\Budget;
 
 class BudgetController extends Controller {
@@ -22,8 +24,16 @@ class BudgetController extends Controller {
         return response(json_encode($budget));
     }
 
-    public function budget_list() {
-        $budgets = Budget::paginate(10);
+    public function view($start, $end) {
+        $end = $end .' 23:59:59';
+        $transactions = Transaction::with('recurring')->whereRaw('occurred_at > ? AND occurred_at < ?', [$start, $end])->orderBy('occurred_at', 'desc')->get();
+
+        return response(json_encode($transactions));
+    }
+
+    public function budget_list(Request $request) {
+        $user_id = $this->getUserIdFromToken($request->bearerToken());
+        $budgets = Budget::where('user_id', $user_id)->get();
         return response(json_encode($budgets));
     }
 }

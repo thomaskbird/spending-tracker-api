@@ -10,4 +10,10 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function getUserIdFromToken($token) {
+        $decoded_token = base64_decode($token);
+        $token_parts = explode('||', $decoded_token);
+        return $token_parts[0];
+    }
 }

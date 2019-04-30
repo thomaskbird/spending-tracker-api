@@ -1,7 +1,7 @@
 <?php
 
 // header('Access-Control-Allow-Origin: http://budget.thomaskbird.com');
-header('Access-Control-Allow-Origin: http://localhost:8009');
+header('Access-Control-Allow-Origin: http://localhost:8075');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, User-Agent, authorization");
 
 use Illuminate\Http\Request;
@@ -32,9 +32,9 @@ route::middleware(['apiToken'])->group(function() {
     route::post('account/user/add', ['as' => 'account_user_add', 'uses' => 'AccountController@account_user_add']);
 
     // Budget routes
-    route::get('budgets', ['as' => 'budget_list', 'uses' => 'BudgetController@budget_list']);
     route::get('budgets/{id}', ['as' => 'budget_single', 'uses' => 'BudgetController@budget_single']);
     route::get('budgets/remove/{id}', ['as' => 'budget_remove', 'uses' => 'BudgetController@budget_remove']);
+    route::get('budgets', ['as' => 'budget_list', 'uses' => 'BudgetController@budget_list']);
     route::post('budgets', ['as' => 'budget_create', 'uses' => 'BudgetController@budget_create']);
     route::post('budgets/{id}', ['as' => 'budget_edit', 'uses' => 'BudgetController@budget_edit']);
 
