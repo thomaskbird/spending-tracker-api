@@ -38,8 +38,12 @@ class TransactionController extends Controller {
                 $input['occurred_at'] = isset($input['start_at']) ? $input['start_at'] : date('Y-m-d H:i:s');
             }
 
+            $user_id = $this->getUserIdFromToken($request->bearerToken());
+            $input['user_id'] = $user_id;
+
             if(isset($input['end_at'])) {
                 $recurring = Recurring::create([
+                    'user_id' => $user_id,
                     'recurring_type' => $input['recurring_type'],
                     'start_at' => $input['start_at'],
                     'end_at' => $input['end_at']
@@ -47,7 +51,7 @@ class TransactionController extends Controller {
 
                 $input['recurring_id'] = $recurring->id;
 
-                $created_occurences = $this->create_occurences($recurring, $input);
+                $created_occurences = $this->create_occurences($recurring, $input, $user_id);
 
                 unset($input['recurring_type'], $input['end_at']);
 
@@ -102,6 +106,9 @@ class TransactionController extends Controller {
                 $input['occurred_at'] = isset($input['start_at']) ? $input['start_at'] : date('Y-m-d H:i:s');
             }
 
+            $user_id = $this->getUserIdFromToken($request->bearerToken());
+            $input['user_id'] = $user_id;
+
             if(isset($input['end_at'])) {
                 $recurring = Recurring::find($input['recurring_id']);
                 $recurring->recurring_type = $input['recurring_type'];
@@ -111,7 +118,7 @@ class TransactionController extends Controller {
 
                 // todo: We don't need to create we need to update below
                 $delete_occurences = $this->delete_occurences($input['recurring_id']);
-                $created_occurences = $this->create_occurences($recurring, $input);
+                $created_occurences = $this->create_occurences($recurring, $input, $user_id);
 
                 unset($input['recurring_type'], $input['end_at']);
 
@@ -164,12 +171,13 @@ class TransactionController extends Controller {
         return $transaction;
     }
 
-    public function create_occurences($recurring, $transaction) {
+    public function create_occurences($recurring, $transaction, $user_id = 0) {
         $occurence_timestamps = $this->create_occurence_timestamps($recurring['recurring_type'], $recurring->start_at, $recurring->end_at);
         $occurences_created = [];
 
         foreach($occurence_timestamps as $timestamp) {
             $transaction = Transaction::create([
+                'user_id' => $user_id,
                 'recurring_id' => $recurring->id,
                 'title' => $transaction['title'],
                 'description' => $transaction['description'],

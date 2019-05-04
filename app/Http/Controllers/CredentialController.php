@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 
 use App\Http\Models\User;
+use App\Http\Models\Account;
+use App\Http\Models\AccountUser;
 
 use Hash;
 use Auth;
@@ -24,12 +26,15 @@ class CredentialController extends Controller {
                 'errors' => $validator->errors()
             ]), 401);
         } else {
-            $user = User::where('email', $input['email'])->first();
+            $user = User::with('accounts')->where('email', $input['email'])->first();
 
             if($user) {
                 if(Auth::attempt($input)) {
+
+                    $account_string = implode('-', Auth::user()->accounts->pluck('id')->toArray());
+
                     $expiration = date('Y-m-d H:i:s', strtotime("+7 day"));
-                    $api_token = base64_encode(Auth::id() .'||'. $expiration);
+                    $api_token = base64_encode(Auth::id() .'||'. $account_string .'||'. $expiration);
                     $user->api_token = $api_token;
                     $user->save();
 
@@ -81,6 +86,15 @@ class CredentialController extends Controller {
             $user = User::create($input);
             $email = $user->email;
 
+            $account = Account::create([
+                'created_by' => $user->id
+            ]);
+
+            $account_user = AccountUser::create([
+                'account_id' => $account->id,
+                'user_id' => $user->id
+            ]);
+
             Mail::send('emails.basic', $input, function($message) use ( $email ){
 
                 $message->from( 'info@SpendingTracker.com', 'SpendingTracker' );
@@ -91,7 +105,9 @@ class CredentialController extends Controller {
             return response(json_encode([
                 'status' => true,
                 'data' => [
-                    'user' => $user
+                    'user' => $user,
+                    'account' => $account,
+                    'account_user' => $account_user
                 ]
             ]));
         }
