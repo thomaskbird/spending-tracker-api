@@ -1,6 +1,6 @@
-<?php
+<?php namespace App\Http\Controllers;
 
-namespace App\Http\Controllers;
+use Illuminate\Support\Str;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -15,5 +15,9 @@ class Controller extends BaseController
         $decoded_token = base64_decode($token);
         $token_parts = explode('||', $decoded_token);
         return $token_parts[0];
+    }
+
+    public function create_slug($str, $splitter = '-') {
+        return Str::slug($str, $splitter);
     }
 }
