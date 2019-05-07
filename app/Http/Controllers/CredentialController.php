@@ -12,6 +12,7 @@ use Validator;
 use Illuminate\Support\Facades\Mail;
 
 class CredentialController extends Controller {
+
     public function action_login(Request $request) {
         $input = $request->except('_token');
 
@@ -67,7 +68,7 @@ class CredentialController extends Controller {
 
         $validator = Validator::make($input, [
             'email' => 'required',
-            'password' => 'required'
+            'password' => 'required|unique:users'
         ]);
 
         if($validator->fails()) {

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Recurring;
 use App\Http\Models\Transaction;
+use App\Http\Models\TransactionTag;
+
 use Illuminate\Http\Request;
 use Validator;
 
@@ -265,5 +267,76 @@ class TransactionController extends Controller {
         $transactions = Transaction::with('recurring')->whereRaw('user_id = ? AND occurred_at > ? AND occurred_at < ?', [$user_id, $start, $end])->orderBy('occurred_at', 'desc')->get();
 
         return response(json_encode($transactions));
+    }
+
+    public function transaction_add_tag(Request $request) {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'transaction_id' => 'required',
+            'tag_id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            $existing = TransactionTag::whereRaw('transaction_id = ? AND tag_id = ?', [$input['transaction_id'], $input['tag_id']])->first();
+
+            if($existing) {
+                return response(json_encode([
+                    'status' => false,
+                    'errors' => ['This tag `'. $input['tag_id'] .'` already exists for the transaction with the id: `'. $input['tag_id'] .'`']
+                ]), 401);
+            } else {
+                $transaction_tag = TransactionTag::create($input);
+
+                return response(json_encode([
+                    'status' => true,
+                    'data' => [
+                        'transaction_tag' => $transaction_tag
+                    ]
+                ]));
+            }
+        }
+    }
+
+    public function transaction_remove_tag(Request $request) {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'transaction_id' => 'required',
+            'tag_id' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            $remove = TransactionTag::whereRaw('transaction_id = ? AND tag_id = ?', [$input['transaction_id'], $input['tag_id']])->first();
+            if($remove) {
+                $remove->delete();
+                return response(json_encode(['status' => true]));
+            } else {
+                return response(json_encode([
+                    'status' => false,
+                    'errors' => ['No transaction tag found']
+                ]));
+            }
+        }
+    }
+
+    public function transaction_tags($transaction_id) {
+        $transaction_tag_ids = TransactionTag::where('transaction_id', $transaction_id)->pluck('id');
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'transaction_tag_ids' => $transaction_tag_ids
+            ]
+        ]));
     }
 }

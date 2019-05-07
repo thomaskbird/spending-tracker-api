@@ -40,14 +40,19 @@ route::middleware(['apiToken'])->group(function() {
     // Tag routes
     route::get('tags', ['as' => 'view', 'uses' => 'TagController@view']);
     route::get('tags/{id}', ['as' => 'single', 'uses' => 'TagController@single']);
-    route::post('tags/create', ['as' => 'action_create', 'uses' => 'TagController@action_create']);
+    route::post('tags', ['as' => 'action_create', 'uses' => 'TagController@action_create']);
 
     // Transaction routes
     route::post('transactions/create', ['as' => 'transactions_action_create', 'uses' => 'TransactionController@action_create']);
     route::post('transactions/edit/{id}', ['as' => 'transactions_action_edit', 'uses' => 'TransactionController@action_edit']);
+    route::post('transaction/tag/add', ['as' => 'transaction_add_tag', 'uses' => 'TransactionController@transaction_add_tag']);
+    route::post('transaction/tag/remove', ['as' => 'transaction_remove_tag', 'uses' => 'TransactionController@transaction_remove_tag']);
+    route::get('transaction/tags/{transaction_id}', ['as' => 'transaction_tags', 'uses' => 'TransactionController@transaction_tags']);
     route::get('transactions/remove/{id}', ['as' => 'transactions_action_remove', 'uses' => 'TransactionController@action_remove']);
     route::get('transactions/{id}', ['as' => 'transactions_single', 'uses' => 'TransactionController@single']);
     route::get('transactions/{start?}/{end?}', ['as' => 'transactions_view', 'uses' => 'TransactionController@view']);
+
+    route::get('update/{model}/{target_id}/{key}/{val}', ['as' => 'single_model_update', 'uses' => 'UtilityController@single_model_update']);
 });
 
 /**
