@@ -13,6 +13,7 @@ class BudgetController extends Controller {
 
         $validator = Validator::make($input, [
             'title' => 'required',
+            'icon' => 'required',
             'amount' => 'required'
         ]);
 
@@ -36,8 +37,36 @@ class BudgetController extends Controller {
         }
     }
 
-    public function budget_edit() {
+    public function budget_edit(Request $request, $id) {
+        $input = $request->all();
 
+        $validator = Validator::make($input, [
+            'title' => 'required',
+            'icon' => 'required',
+            'amount' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            $budget = Budget::find($id);
+
+            foreach($input as $key => $val) {
+                $budget->$key = $val;
+            }
+
+            $budget->save();
+
+            return response(json_encode([
+                'status' => true,
+                'data' => [
+                    'budget' => $budget
+                ]
+            ]));
+        }
     }
 
     public function budget_remove($id) {

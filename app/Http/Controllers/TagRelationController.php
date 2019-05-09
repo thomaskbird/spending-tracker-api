@@ -8,15 +8,15 @@ use Validator;
 
 class TagRelationController extends Controller {
 
-    public function get_tags_with_selected_status(Request $request, $transaction_id) {
+    public function get_tags_with_selected_status(Request $request, $type, $relation_id) {
         $tags_formatted = [];
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $tags = Tag::where('user_id', $user_id)->get()->toArray();
-        $transaction_ids = TagRelation::whereRaw('target_id = ? AND type = ?', [$transaction_id, 'transaction'])->pluck('tag_id')->toArray();
+        $relation_ids = TagRelation::whereRaw('target_id = ? AND type = ?', [$relation_id, $type])->pluck('tag_id')->toArray();
 
         foreach($tags as $tag) {
-            if(in_array($tag['id'], $transaction_ids)) {
+            if(in_array($tag['id'], $relation_ids)) {
                 $tag['selected'] = true;
             } else {
                 $tag['selected'] = false;

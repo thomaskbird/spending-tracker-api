@@ -45,13 +45,12 @@ route::middleware(['apiToken'])->group(function() {
     // Tag relation routes
     route::post('tag/relation/add', ['as' => 'tag_relation_add', 'uses' => 'TagRelationController@tag_relation_add']);
     route::post('tag/relation/remove', ['as' => 'tag_relation_remove', 'uses' => 'TagRelationController@tag_relation_remove']);
+    route::get('tag/relation/{type}/{relation_id}', ['as' => 'get_tags_with_selected_status', 'uses' => 'TagRelationController@get_tags_with_selected_status']);
 
     // Transaction routes
     route::post('transactions/create', ['as' => 'transactions_action_create', 'uses' => 'TransactionController@action_create']);
     route::post('transactions/edit/{id}', ['as' => 'transactions_action_edit', 'uses' => 'TransactionController@action_edit']);
 
-
-    route::get('transaction/tag/list/{transaction_id}', ['as' => 'get_tags_with_selected_status', 'uses' => 'TagRelationController@get_tags_with_selected_status']);
     route::get('transaction/tags/{transaction_id}', ['as' => 'transaction_tags', 'uses' => 'TransactionController@transaction_tags']);
     route::get('transactions/remove/{id}', ['as' => 'transactions_action_remove', 'uses' => 'TransactionController@action_remove']);
     route::get('transactions/{id}', ['as' => 'transactions_single', 'uses' => 'TransactionController@single']);
