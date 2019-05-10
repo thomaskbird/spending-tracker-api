@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Models\Recurring;
 use App\Http\Models\Transaction;
-use App\Http\Models\TagRelation;
+use App\Http\Models\Taggable;
 
 use Illuminate\Http\Request;
 use Validator;
@@ -284,7 +284,7 @@ class TransactionController extends Controller {
                 'errors' => $validator->errors()
             ]), 401);
         } else {
-            $existing = TagRelation::whereRaw('target_id = ? AND tag_id = ? AND type = ?', [$input['target_id'], $input['tag_id'], $input['type']])->first();
+            $existing = Taggable::whereRaw('target_id = ? AND tag_id = ? AND type = ?', [$input['target_id'], $input['tag_id'], $input['type']])->first();
 
             if($existing) {
                 return response(json_encode([
@@ -292,7 +292,7 @@ class TransactionController extends Controller {
                     'errors' => ['This tag `'. $input['tag_id'] .'` already exists for the target with the id: `'. $input['target_id'] .'`']
                 ]), 401);
             } else {
-                $transaction_tag = TagRelation::create([
+                $transaction_tag = Taggable::create([
                     'target_id' => $input['target_id'],
                     'tag_id' => $input['tag_id'],
                     'type' => $input['type']

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\TagRelation;
+use App\Http\Models\Taggable;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -27,11 +27,11 @@ class TagController extends Controller {
             $input['slug'] = $this->create_slug($input['title']);
             $tag = Tag::create($input);
 
-            if(isset($input['target_id'])) {
-                $transaction_tag = TagRelation::create([
-                    'target_id' => $input['target_id'],
+            if(isset($input['taggable_id'])) {
+                $transaction_tag = Taggable::create([
+                    'taggable_id' => $input['taggable_id'],
                     'tag_id' => $tag->id,
-                    'type' => $input['type']
+                    'taggable_type' => $input['taggable_type']
                 ]);
 
                 return response(json_encode([
