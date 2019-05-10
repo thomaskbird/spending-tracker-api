@@ -43,9 +43,9 @@ route::middleware(['apiToken'])->group(function() {
     route::post('tags', ['as' => 'action_create', 'uses' => 'TagController@action_create']);
 
     // Tag relation routes
-    route::post('tag/relation/add', ['as' => 'tag_relation_add', 'uses' => 'TagRelationController@tag_relation_add']);
-    route::post('tag/relation/remove', ['as' => 'tag_relation_remove', 'uses' => 'TagRelationController@tag_relation_remove']);
-    route::get('tag/relation/{type}/{relation_id}', ['as' => 'get_tags_with_selected_status', 'uses' => 'TagRelationController@get_tags_with_selected_status']);
+    route::post('tag/relation/add', ['as' => 'tag_relation_add', 'uses' => 'TaggableController@tag_relation_add']);
+    route::post('tag/relation/remove', ['as' => 'tag_relation_remove', 'uses' => 'TaggableController@tag_relation_remove']);
+    route::post('tag/relation', ['as' => 'get_tags_with_selected_status', 'uses' => 'TaggableController@get_tags_with_selected_status']);
 
     // Transaction routes
     route::post('transactions/create', ['as' => 'transactions_action_create', 'uses' => 'TransactionController@action_create']);

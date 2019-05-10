@@ -10,6 +10,9 @@ class Budget extends Model {
     ];
 
     public function tags() {
-        return $this->hasMany('App\Http\Models\Tag', 'tag_id');
+        return $this->morphToMany(
+            'App\Http\Models\Tag',
+            'taggable'
+        );
     }
 }

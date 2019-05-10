@@ -9,7 +9,15 @@ class Tag extends Model {
         'user_id', 'parent_id', 'title', 'slug', 'description'
     ];
 
+    public function taggable() {
+        return $this->morphTo();
+    }
+
+    public function budgets() {
+        return $this->morphedByMany('App\Http\Models\Budget', 'taggable');
+    }
+
     public function transactions() {
-        return $this->hasMany('App\Http\Models\Transaction', 'transaction_id');
+        return $this->morphedByMany('App\Http\Models\Transaction', 'taggable');
     }
 }

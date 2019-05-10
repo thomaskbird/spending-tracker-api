@@ -12,4 +12,11 @@ class Transaction extends Model {
     public function recurring() {
         return $this->belongsTo('App\Http\Models\Recurring', 'recurring_id');
     }
+
+    public function tags() {
+        return $this->morphToMany(
+            'App\Http\Models\Tag',
+            'taggable'
+        );
+    }
 }
