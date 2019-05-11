@@ -13,6 +13,19 @@ use Illuminate\Support\Facades\Mail;
 
 class CredentialController extends Controller {
 
+    /**
+     * This action logs a user into the system, it generates an auth token
+     *
+     * Auth token:
+     *  This token is used for authorizing api requests, it is valid for one week. It is comprised of three main
+     *  parts that are base64 encoded and sent back to the client. The three parts are:
+     *      - User id
+     *      - Account ids separated by `-`
+     *      - Expiration timestamp
+     *
+     * @param Request $request - The request parameters
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response - Returns a user response
+     */
     public function action_login(Request $request) {
         $input = $request->except('_token');
 

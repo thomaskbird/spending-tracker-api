@@ -50,20 +50,18 @@ class TaggableController extends Controller {
                 'errors' => $validator->errors()
             ]), 401);
         } else {
-            $remove = Taggable::whereRaw('taggable_id = ? AND tag_id = ? AND taggable_type = ?', [$input['taggable_id'], $input['tag_id'], $input['taggable_type']])->first();
+            $remove = Taggable::whereRaw('taggable_id = ? AND tag_id = ? AND taggable_type = ?', [
+                $input['taggable_id'],
+                $input['tag_id'],
+                $input['taggable_type']
+            ])->first();
+
             if($remove) {
                 if($input['taggable_type'] === 'App\Http\Models\Transaction') {
                     $transaction = Transaction::find($input['taggable_id']);
-                    if($transaction->recurring_id) {
-                        $transactions = Transaction::where('recurring_id', $transaction->recurring_id)->get();
-                        foreach($transactions as $trans) {
-                            $taggable_removes = Taggable::whereRaw('taggable_id = ? and taggable_type = ?', [$trans->id, 'App\Http\Models\Transaction'])->get();
-                            foreach($taggable_removes as $removable) {
-                                $removable->delete();
-                            }
-                        }
 
-                        $remove->delete();
+                    if($transaction->recurring_id) {
+                        Transaction::where('recurring_id', $transaction->recurring_id)->delete();
                     }
                 }
 
