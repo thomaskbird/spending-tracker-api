@@ -58,6 +58,11 @@ class TagController extends Controller {
     public function view(Request $request) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
         $tags = Tag::where('user_id', $user_id)->get();
-        return response(json_encode($tags));
+        return response(json_encode([
+            'status'=> true,
+            'data' => [
+                'tags' => $tags
+            ]
+        ]));
     }
 }
