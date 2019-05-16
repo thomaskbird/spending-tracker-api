@@ -25,6 +25,7 @@ class BudgetController extends Controller {
         } else {
             $user_id = $this->getUserIdFromToken($request->bearerToken());
             $input['user_id'] = $user_id;
+            $input['slug'] = $this->create_slug($input['title']);
 
             $budget = Budget::create($input);
 
@@ -57,6 +58,8 @@ class BudgetController extends Controller {
             foreach($input as $key => $val) {
                 $budget->$key = $val;
             }
+
+            $budget->slug = $this->create_slug($input['title']);
 
             $budget->save();
 
