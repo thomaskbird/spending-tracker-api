@@ -43,6 +43,38 @@ class TagController extends Controller {
             }
 
             return response(json_encode([
+                'status' => true,
+                'data' => [
+                    'tag' => $tag
+                ]
+            ]));
+        }
+    }
+
+    public function action_edit(Request $request, $id) {
+        $input = $request->all();
+
+        $validator = Validator::make($input, [
+            'title' => 'required|unique:tags'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]));
+        } else {
+            $tag = Tag::find($id);
+            $input['slug'] = $this->create_slug($input['title']);
+
+            foreach($input as $key => $val) {
+                $tag->$key = $val;
+            }
+
+            $tag->save();
+
+            return response(json_encode([
+                'status' => true,
                 'data' => [
                     'tag' => $tag
                 ]
