@@ -83,13 +83,18 @@ class TagController extends Controller {
     }
 
     public function single($id) {
-        $tag = Tag::find($id);
-        return response(json_encode($tag));
+        $tag = Tag::with('transactions')->find($id);
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'tag' => $tag
+            ]
+        ]));
     }
 
     public function view(Request $request) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
-        $tags = Tag::where('user_id', $user_id)->get();
+        $tags = Tag::with('transactions')->where('user_id', $user_id)->get();
         return response(json_encode([
             'status'=> true,
             'data' => [
