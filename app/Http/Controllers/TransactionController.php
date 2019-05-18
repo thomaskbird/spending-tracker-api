@@ -281,7 +281,13 @@ class TransactionController extends Controller {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $end = $end .' 23:59:59';
-        $transactions = Transaction::with('recurring')->whereRaw('user_id = ? AND occurred_at > ? AND occurred_at < ?', [$user_id, $start, $end])->orderBy('occurred_at', 'desc')->get();
+
+        $transactions = Transaction::with('recurring')
+            ->whereRaw(
+                'user_id = ? AND occurred_at > ? AND occurred_at < ?',
+                [$user_id, $start, $end]
+            )->orderBy('occurred_at', 'desc')
+            ->get();
 
         return response(json_encode($transactions));
     }
