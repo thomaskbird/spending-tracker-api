@@ -63,7 +63,7 @@ class TaggableController extends Controller {
 
                     if($transaction->recurring_id) {
                         $recurring_transaction_ids = Transaction::where('recurring_id', $transaction->recurring_id)->pluck('id')->toArray();
-                        Taggable::where('taggable_type', $input['taggable_type'])->whereIn('taggable_id', $recurring_transaction_ids)->delete();
+                        Taggable::whereRaw('taggable_type = ? AND tag_id = ?', [$input['taggable_type'], $input['tag_id']])->whereIn('taggable_id', $recurring_transaction_ids)->delete();
                     }
                 }
 
