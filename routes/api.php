@@ -1,6 +1,6 @@
 <?php
-// header('Access-Control-Allow-Origin: http://budget.thomaskbird.com');
-header('Access-Control-Allow-Origin: http://localhost:8075');
+header('Access-Control-Allow-Origin: http://budget.thomaskbird.com');
+// header('Access-Control-Allow-Origin: http://localhost:8075');
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, User-Agent, authorization");
 
 use Illuminate\Http\Request;
@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 route::post('login', ['as' => 'action_login', 'uses' => 'CredentialController@action_login']);
 route::post('signup', ['as' => 'action_signup', 'uses' => 'CredentialController@action_signup']);
 route::post('activate/{activation_code}', ['as' => 'account_user_activate', 'uses' => 'CredentialController@account_user_activate']);
+route::post('forgot-password', ['as' => 'forgot_password', 'uses' => 'CredentialController@forgot_password']);
 
 /**
  * Protected routes
