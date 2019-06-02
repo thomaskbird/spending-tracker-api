@@ -168,8 +168,48 @@ class CredentialController extends Controller {
         }
     }
 
-    public function recovery_password() {
+    public function forgot_password(Request $request) {
+        $input = $request->except('_token');
 
+        $validator = Validator::make($input, [
+            'email' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            $salt = $this->generateRandomString();
+            $reset_token = base64_encode($input['email'] .'||'. config('general.site_salt') .'||'. $salt);
+
+            $user = User::where('email', $input['email'])->first();
+            $name = $user->first_name .' '. $user->last_name;
+            $email = $user->email;
+            $user->reset_token = $reset_token;
+            $user->save();
+
+            $mail = Mail::send('emails.basic', [
+                'name' => $name,
+                'reset_token' => $reset_token
+            ], function($message) use ( $email ){
+                $message->from( 'info@SpendingTracker.com', 'SpendingTracker' );
+                $message->to($email)->subject('Password reset');
+            });
+
+            if($mail) {
+                return response(json_encode([
+                    'status' => true,
+                    'errors' => ['Your password has been reset check email momentarily.']
+                ]));
+            } else {
+                return response(json_encode([
+                    'status' => false,
+                    'errors' => ['Message not sent please try again']
+                ]), 401);
+            }
+        }
     }
 
     private function generateRandomString($length = 10) {
