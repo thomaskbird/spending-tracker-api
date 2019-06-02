@@ -1,6 +1,12 @@
 <?php
-// header('Access-Control-Allow-Origin: http://budget.thomaskbird.com');
-header('Access-Control-Allow-Origin: http://localhost:8075');
+$env = env('APP_ENV', 'dev');
+if($env === 'dev') {
+    $allowed_env = 'http://localhost:8075';
+} else {
+    $allowed_env = 'http://budget.thomaskbird.com';
+}
+
+header('Access-Control-Allow-Origin: '. $allowed_env);
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, User-Agent, authorization");
 
 use Illuminate\Http\Request;
