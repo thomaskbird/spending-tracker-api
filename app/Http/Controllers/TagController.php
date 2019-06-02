@@ -82,6 +82,21 @@ class TagController extends Controller {
         }
     }
 
+    public function action_remove($id) {
+        $tag = Tag::find($id);
+        $tag->delete();
+
+        $taggables = Taggable::where('tag_id', $id);
+
+        if($taggables) {
+            $taggables->delete();
+        }
+
+        return response(json_encode([
+            'status'=> true
+        ]));
+    }
+
     public function single($id) {
         $tag = Tag::with('transactions')->find($id);
         return response(json_encode([

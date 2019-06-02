@@ -118,9 +118,7 @@ class TransactionController extends Controller {
                 $recurring->end_at = $input['end_at'];
                 $recurring->save();
 
-                // todo: We don't need to create we need to update below
-                $delete_occurences = $this->delete_occurences($input['recurring_id']);
-                $created_occurences = $this->create_occurences($recurring, $input, $user_id);
+                $updated_occurences = $this->update_occurrences($recurring, $input, $user_id);
 
                 unset($input['recurring_type'], $input['end_at']);
 
@@ -128,8 +126,7 @@ class TransactionController extends Controller {
                     'status' => true,
                     'data' => [
                         'recurring' => $recurring,
-                        'occurences' => $created_occurences,
-                        'occurences_deleted' => $delete_occurences
+                        'updated_occurrences' => $updated_occurences
                     ]
                 ];
             } else {
@@ -144,6 +141,26 @@ class TransactionController extends Controller {
 
             return response(json_encode($response));
         }
+    }
+
+    public function update_occurrences($recurring, $transaction, $user_id) {
+        $recurrings = Transaction::where('recurring_id', $recurring->id)->orderBy('occurred_at', 'ASC')->get();
+        $occurence_timestamps = $this->create_occurence_timestamps($recurring->recurring_type, $recurring->start_at, $recurring->end_at);
+
+        foreach($recurrings as $i => $rec) {
+            $rec->update([
+                'user_id' => $user_id,
+                'title' => $transaction['title'],
+                'description' => $transaction['description'],
+                'amount' => $transaction['amount'],
+                'type' => $transaction['type'],
+                'occurred_at' => $occurence_timestamps[$i]
+            ]);
+
+            $recurring->save();
+        }
+
+        return $recurrings;
     }
 
     private function delete_occurences($id) {
@@ -264,7 +281,13 @@ class TransactionController extends Controller {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $end = $end .' 23:59:59';
-        $transactions = Transaction::with('recurring')->whereRaw('user_id = ? AND occurred_at > ? AND occurred_at < ?', [$user_id, $start, $end])->orderBy('occurred_at', 'desc')->get();
+
+        $transactions = Transaction::with('recurring')
+            ->whereRaw(
+                'user_id = ? AND occurred_at > ? AND occurred_at < ?',
+                [$user_id, $start, $end]
+            )->orderBy('occurred_at', 'desc')
+            ->get();
 
         return response(json_encode($transactions));
     }
