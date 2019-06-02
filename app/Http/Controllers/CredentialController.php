@@ -190,7 +190,7 @@ class CredentialController extends Controller {
             $user->reset_token = $reset_token;
             $user->save();
 
-            $mail = Mail::send('emails.basic', [
+            $mail = Mail::send('emails.reset_password', [
                 'name' => $name,
                 'reset_token' => $reset_token
             ], function($message) use ( $email ){
