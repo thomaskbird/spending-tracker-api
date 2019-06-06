@@ -27,7 +27,8 @@ use Illuminate\Support\Facades\Route;
 route::post('login', ['as' => 'action_login', 'uses' => 'CredentialController@action_login']);
 route::post('signup', ['as' => 'action_signup', 'uses' => 'CredentialController@action_signup']);
 route::post('activate/{activation_code}', ['as' => 'account_user_activate', 'uses' => 'CredentialController@account_user_activate']);
-route::post('forgot-password', ['as' => 'forgot_password', 'uses' => 'CredentialController@forgot_password']);
+route::post('forgot-password', ['as' => 'action_forgot_password', 'uses' => 'CredentialController@action_forgot_password']);
+route::post('reset-password/{reset_token}', ['as' => 'action_reset_password', 'uses' => 'CredentialController@action_reset_password']);
 
 /**
  * Protected routes
@@ -66,6 +67,8 @@ route::middleware(['apiToken'])->group(function() {
     route::get('transactions/{start?}/{end?}', ['as' => 'transactions_view', 'uses' => 'TransactionController@view']);
 
     route::get('update/{model}/{target_id}/{key}/{val}', ['as' => 'single_model_update', 'uses' => 'UtilityController@single_model_update']);
+
+    route::post('upload/{type}', ['as' => 'upload_file', 'uses' => 'UploadController@upload_file']);
 });
 
 /**

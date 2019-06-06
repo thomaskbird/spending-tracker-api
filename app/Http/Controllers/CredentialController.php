@@ -110,10 +110,8 @@ class CredentialController extends Controller {
             ]);
 
             Mail::send('emails.basic', $input, function($message) use ( $email ){
-
                 $message->from( 'info@SpendingTracker.com', 'SpendingTracker' );
                 $message->to($email)->subject('Account Activation');
-
             });
 
             return response(json_encode([
@@ -168,7 +166,7 @@ class CredentialController extends Controller {
         }
     }
 
-    public function forgot_password(Request $request) {
+    public function action_forgot_password(Request $request) {
         $input = $request->except('_token');
 
         $validator = Validator::make($input, [
@@ -190,25 +188,46 @@ class CredentialController extends Controller {
             $user->reset_token = $reset_token;
             $user->save();
 
-            $mail = Mail::send('emails.reset_password', [
+            Mail::send('emails.reset_password', [
                 'name' => $name,
                 'reset_token' => $reset_token
-            ], function($message) use ( $email ){
-                $message->from( 'info@SpendingTracker.com', 'SpendingTracker' );
+            ], function($message) use ($email) {
+                $message->from('info@SpendingTracker.com', 'SpendingTracker');
                 $message->to($email)->subject('Password reset');
             });
 
-            if($mail) {
-                return response(json_encode([
-                    'status' => true,
-                    'errors' => ['Your password has been reset check email momentarily.']
-                ]));
-            } else {
-                return response(json_encode([
-                    'status' => false,
-                    'errors' => ['Message not sent please try again']
-                ]), 401);
-            }
+            return response(json_encode([
+                'status' => true,
+                'errors' => ['Your password has been reset check email momentarily.']
+            ]));
+        }
+    }
+
+    public function action_reset_password(Request $request, $reset_token) {
+        $input = $request->except('_token');
+
+        $validator = Validator::make($input, [
+            'password' => 'required'
+        ]);
+
+        if($validator->fails()) {
+            return response(json_encode([
+                'status' => false,
+                'errors' => $validator->errors()
+            ]), 401);
+        } else {
+            $reset_token = base64_decode($reset_token);
+            $reset_code_parts = explode('||', $reset_token);
+
+            $user = User::where('email', $reset_code_parts[0])->first();
+            $user->password = Hash::make($input['password']);
+            $user->reset_token = '';
+            $user->save();
+
+            return response(json_encode([
+                'status' => true,
+                'errors' => ['Your password has been reset you can now login.']
+            ]));
         }
     }
 
