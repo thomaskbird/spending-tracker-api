@@ -113,10 +113,12 @@ class BudgetController extends Controller {
 
         $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
             // need to add a filter for only the current month
-            $query->with('transactions')->whereRaw(
-                'user_id = ? AND occurred_at > ? AND occurred_at < ?',
-                [$user_id, $start, $end]
-            )->get();
+            $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
+                $query->whereRaw(
+                    'user_id = ? AND occurred_at > ? AND occurred_at < ?',
+                    [$user_id, $start, $end]
+                );
+            }]);
         }])->where('user_id', $user_id)->get();
 
         return response(json_encode([
