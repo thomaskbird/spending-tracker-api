@@ -107,11 +107,16 @@ class BudgetController extends Controller {
         }
     }
 
-    public function budget_list(Request $request) {
+    public function budget_list(Request $request, $start, $end) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
+        $end = $end .' 23:59:59';
 
-        $budgets = Budget::with(['tags' => function($query) {
-            $query->with('transactions');
+        $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
+            // need to add a filter for only the current month
+            $query->with('transactions')->whereRaw(
+                'user_id = ? AND occurred_at > ? AND occurred_at < ?',
+                [$user_id, $start, $end]
+            )->get();
         }])->where('user_id', $user_id)->get();
 
         return response(json_encode([

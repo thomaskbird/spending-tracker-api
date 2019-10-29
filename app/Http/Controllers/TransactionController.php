@@ -277,7 +277,6 @@ class TransactionController extends Controller {
     }
 
     public function view(Request $request, $start, $end) {
-
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $end = $end .' 23:59:59';
