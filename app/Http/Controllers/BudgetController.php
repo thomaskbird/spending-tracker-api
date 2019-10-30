@@ -89,8 +89,6 @@ class BudgetController extends Controller {
         $budget = Budget::find($id);
         $budget_transactions = $this->budget_tag_transactions($id, $user_id);
 
-        echo $budget->user_id .' - '. $user_id;exit;
-
         if($budget->user_id === $user_id) {
             return response(json_encode([
                 'status' => true,
