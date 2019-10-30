@@ -89,7 +89,7 @@ class BudgetController extends Controller {
         $budget = Budget::find($id);
         $budget_transactions = $this->budget_tag_transactions($id, $user_id);
 
-        if($budget->user_id == $user_id) {
+        if(intval($budget->user_id) == intval($user_id)) {
             return response(json_encode([
                 'status' => true,
                 'data' => [
