@@ -89,7 +89,7 @@ class BudgetController extends Controller {
         $budget = Budget::find($id);
 
         $end = $end .' 23:59:59';
-        $budget_transactions = $this->budget_tag_transactions($id, $user_id);
+        $budget_transactions = $this->budget_tag_transactions($id, $user_id, $start, $end);
 
         if($budget->user_id == $user_id) {
             return response(json_encode([
