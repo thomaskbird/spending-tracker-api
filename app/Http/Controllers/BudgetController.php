@@ -84,9 +84,11 @@ class BudgetController extends Controller {
         ]));
     }
 
-    public function budget_single(Request $request, $id) {
+    public function budget_single(Request $request, $id, $start, $end) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
         $budget = Budget::find($id);
+
+        $end = $end .' 23:59:59';
         $budget_transactions = $this->budget_tag_transactions($id, $user_id);
 
         if($budget->user_id == $user_id) {
