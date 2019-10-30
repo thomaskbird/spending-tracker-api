@@ -131,10 +131,15 @@ class BudgetController extends Controller {
         ]));
     }
 
-    public function budget_tag_transactions($id, $user_id) {
+    public function budget_tag_transactions($id, $user_id, $start, $end) {
         $transactions = [];
-        $budget = Budget::with(['tags' => function($query) {
-            $query->with('transactions');
+        $budget = Budget::with(['tags' => function($query) use ($start, $end) {
+            $query->with(['transactions' => function($query) use($start, $end) {
+                $query->whereRaw(
+                    'occurred_at > ? AND occurred_at < ?',
+                    [$start, $end]
+                );
+            }]);
         }])->whereRaw('id = ? AND user_id = ?', [$id, $user_id])->first();
 
         foreach($budget->tags as $tag) {
