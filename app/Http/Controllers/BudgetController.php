@@ -88,7 +88,8 @@ class BudgetController extends Controller {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
         $budget = Budget::find($id);
 
-        $end = $end .' 23:59:59';
+	$end = $end .' 23:59:59';
+	$start = $start .' 00:00:00';
         $budget_transactions = $this->budget_tag_transactions($id, $user_id, $start, $end);
 
         if($budget->user_id == $user_id) {
@@ -117,7 +118,7 @@ class BudgetController extends Controller {
             // need to add a filter for only the current month
             $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
                 $query->whereRaw(
-                    'user_id = ? AND occurred_at > ? AND occurred_at < ?',
+                    'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
                     [$user_id, $start, $end]
                 );
             }]);
@@ -131,12 +132,12 @@ class BudgetController extends Controller {
         ]));
     }
 
-    public function budget_tag_transactions($id, $user_id, $start, $end) {
-        $transactions = [];
+    public function budget_tag_transactions($id, $user_id, $start, $end) { 
+	    $transactions = [];
         $budget = Budget::with(['tags' => function($query) use ($start, $end) {
-            $query->with(['transactions' => function($query) use($start, $end) {
-                $query->whereRaw(
-                    'occurred_at > ? AND occurred_at < ?',
+            $query->with(['transactions' => function($transaction_query) use($start, $end) {
+                $transaction_query->whereRaw(
+                    'occurred_at >= ? AND occurred_at <= ?',
                     [$start, $end]
                 );
             }]);
