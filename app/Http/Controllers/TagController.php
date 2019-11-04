@@ -13,7 +13,7 @@ class TagController extends Controller {
         $input = $request->all();
 
         $validator = Validator::make($input, [
-            'title' => 'required|unique:tags'
+            'title' => 'required'
         ]);
 
         if($validator->fails()) {

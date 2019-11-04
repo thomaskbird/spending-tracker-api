@@ -144,6 +144,7 @@ class TransactionController extends Controller {
     }
 
     public function update_occurrences($recurring, $transaction, $user_id) {
+        // todo: doesnt seem like this is finding or updating the occurrences
         $recurrings = Transaction::where('recurring_id', $recurring->id)->orderBy('occurred_at', 'ASC')->get();
         $occurence_timestamps = $this->create_occurence_timestamps($recurring->recurring_type, $recurring->start_at, $recurring->end_at);
 
