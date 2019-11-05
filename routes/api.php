@@ -63,8 +63,8 @@ route::middleware(['apiToken'])->group(function() {
 
     route::get('transaction/tags/{transaction_id}', ['as' => 'transaction_tags', 'uses' => 'TransactionController@transaction_tags']);
     route::get('transactions/remove/{id}', ['as' => 'transactions_action_remove', 'uses' => 'TransactionController@action_remove']);
-    route::get('transactions/{id}', ['as' => 'transactions_single', 'uses' => 'TransactionController@single']);
     route::get('transactions/{start?}/{end?}', ['as' => 'transactions_view', 'uses' => 'TransactionController@view']);
+    route::get('transactions/{id}', ['as' => 'transactions_single', 'uses' => 'TransactionController@single']);
 
     route::get('update/{model}/{target_id}/{key}/{val}', ['as' => 'single_model_update', 'uses' => 'UtilityController@single_model_update']);
 
