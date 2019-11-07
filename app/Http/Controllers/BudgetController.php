@@ -167,19 +167,20 @@ class BudgetController extends Controller {
                 );
             }]);
         }])->where('user_id', $user_id)->get()->toArray();
-print_r($budgets); exit;
+
         foreach($budgets as $budget) {
 
+            array_push($data, [
+                'name' => $budget['title'],
+                'limit' => $budget['amount'],
+            ]);
         }
 
-//        [
-//            {name: "Auto", limit: 4000, current: 2400},
-
-//        return response(json_encode([
-//            'status' => true,
-//            'data' => [
-//                'budgets' => $budgets
-//            ]
-//        ]));
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'budgets' => $budgets
+            ]
+        ]));
     }
 }
