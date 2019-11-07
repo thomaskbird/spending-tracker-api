@@ -45,6 +45,9 @@ route::middleware(['apiToken'])->group(function() {
     route::post('budgets', ['as' => 'budget_create', 'uses' => 'BudgetController@budget_create']);
     route::post('budgets/{id}', ['as' => 'budget_edit', 'uses' => 'BudgetController@budget_edit']);
 
+    // Import routes
+    route::post('import', ['as' => 'action_import', 'uses' => 'ImportController@action_import']);
+
     // Tag routes
     route::get('tags', ['as' => 'view', 'uses' => 'TagController@view']);
     route::get('tags/remove/{id}', ['as' => 'action_remove', 'uses' => 'TagController@action_remove']);

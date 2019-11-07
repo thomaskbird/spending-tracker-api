@@ -88,8 +88,9 @@ class BudgetController extends Controller {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
         $budget = Budget::find($id);
 
-	$end = $end .' 23:59:59';
-	$start = $start .' 00:00:00';
+        $start = $start .' 00:00:00';
+        $end = $end .' 23:59:59';
+
         $budget_transactions = $this->budget_tag_transactions($id, $user_id, $start, $end);
 
         if($budget->user_id == $user_id) {
