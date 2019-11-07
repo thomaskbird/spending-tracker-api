@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Http\Models\Import;
+use App\Http\Models\Transaction;
 use App\Http\Models\User;
 
 use Validator;
@@ -32,32 +33,63 @@ class ImportController extends Controller {
             'record_ids' => ''
         ]);
 
-        $this->extract_and_insert_rows($import);
+        $insertions = $this->extract_and_insert_rows($import, $user_id);
 
-//        return response(json_encode([
-//            'status' => true,
-//            'data' => [
-//                'import' => $import
-//            ]
-//        ]));
+        $import->records = $insertions['records'];
+        $import->record_ids = $insertions['record_ids'];
+
+        $import->save();
+
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'import' => $import
+            ]
+        ]));
     }
 
-    private function extract_and_insert_rows($import) {
+    private function extract_and_insert_rows($import, $user_id) {
         $index = 0;
         ini_set('auto_detect_line_endings',TRUE);
         $handle = fopen(storage_path('imports') .'/'. $import->filename, 'r');
+        $transaction_ids = [];
 
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
-                print_r($data);
+
+                if(substr_count($data[3], '-') === 0) {
+                    $transaction_data = [
+                        'user_id' => $user_id,
+                        'title' => substr($data[2], 0, 20),
+                        'description' => $data[2],
+                        'amount' => $data[3],
+                        'type' => 'income',
+                        'status' => 'queued',
+                        'occurred_at' => $data[0]
+                    ];
+                } else {
+                    $transaction_data = [
+                        'user_id' => $user_id,
+                        'title' => substr($data[2], 0, 20),
+                        'description' => $data[2],
+                        'amount' => $data[3],
+                        'type' => 'expense',
+                        'status' => 'queued',
+                        'occurred_at' => $data[0]
+                    ];
+                }
             }
+
+            $transaction = Transaction::create($transaction_data);
+            array_push($transaction_ids, $transaction->id);
 
             $index++;
         }
         ini_set('auto_detect_line_endings',FALSE);
-    }
 
-    private function extract_rows() {
-
+        return [
+            'record_ids' => $transaction_ids,
+            'records' => $index - 1,
+        ];
     }
 }
