@@ -79,7 +79,7 @@ class ImportController extends Controller {
                 }
 
                 $transaction = Transaction::create($transaction_data);
-                $transaction_ids += $transaction->id .', ';
+                $transaction_ids = $transaction_ids .', '. $transaction->id;
             }
 
             $index++;
@@ -87,7 +87,7 @@ class ImportController extends Controller {
         ini_set('auto_detect_line_endings',FALSE);
 
         return [
-            'record_ids' => rtrim($transaction_ids, ', '),
+            'record_ids' => $transaction_ids,
             'records' => $index - 1,
         ];
     }
