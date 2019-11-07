@@ -56,6 +56,11 @@ class ImportController extends Controller {
 
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
+                $external = $data[0];
+                $format = 'd/m/y';
+                $dateobj = DateTime::createFromFormat($format, $external);
+                $iso_datetime = $dateobj->format(Datetime::ATOM);
+
                 if(substr_count($data[3], '-') === 0) {
                     $transaction_data = [
                         'user_id' => $user_id,
@@ -64,7 +69,7 @@ class ImportController extends Controller {
                         'amount' => $data[3],
                         'type' => 'income',
                         'status' => 'queued',
-                        'occurred_at' => $data[0]
+                        'occurred_at' => $iso_datetime
                     ];
                 } else {
                     $transaction_data = [
@@ -74,7 +79,7 @@ class ImportController extends Controller {
                         'amount' => $data[3],
                         'type' => 'expense',
                         'status' => 'queued',
-                        'occurred_at' => $data[0]
+                        'occurred_at' => $iso_datetime
                     ];
                 }
 
