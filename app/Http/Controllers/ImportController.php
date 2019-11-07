@@ -57,7 +57,7 @@ class ImportController extends Controller {
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
                 $reformatted_timestamp = date('Y-m-d h:i:s', strtotime($data[0]));
-                $amount_formatted = floatval($data[3]);
+                $amount_formatted = floatval(str_replace('-', '', $data[3]));
 
                 if(substr_count($data[3], '-') === 0) {
                     $transaction_data = [
