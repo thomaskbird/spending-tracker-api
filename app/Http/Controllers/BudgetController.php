@@ -169,10 +169,24 @@ class BudgetController extends Controller {
         }])->where('user_id', $user_id)->get()->toArray();
 
         foreach($budgets as $budget) {
+            $amount = 0;
+
+            if(count($budget['tags']) !== 0) {
+                if(count(budget['tags']['transactions']) !== 0) {
+                    foreach(budget['tags']['transactions'] as $transaction) {
+                        if($transaction['type'] === 'expense') {
+                            $amount = $amount + $transaction['amount'];
+                        } else {
+                            $amount = $amount - $transaction['amount'];
+                        }
+                    }
+                }
+            }
 
             array_push($data, [
                 'name' => $budget['title'],
                 'limit' => $budget['amount'],
+                'current' => $amount
             ]);
         }
 
