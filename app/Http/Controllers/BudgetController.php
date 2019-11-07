@@ -172,8 +172,8 @@ class BudgetController extends Controller {
             $amount = 0;
 
             if(count($budget['tags']) !== 0) {
-                if(count(budget['tags']['transactions']) !== 0) {
-                    foreach(budget['tags']['transactions'] as $transaction) {
+                if(count($budget['tags']['transactions']) !== 0) {
+                    foreach($budget['tags']['transactions'] as $transaction) {
                         if($transaction['type'] === 'expense') {
                             $amount = $amount + $transaction['amount'];
                         } else {
