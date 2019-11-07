@@ -112,6 +112,7 @@ class BudgetController extends Controller {
 
     public function budget_list(Request $request, $start, $end) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
+        $start = $start .' 00:00:00';
         $end = $end .' 23:59:59';
 
         $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
