@@ -56,7 +56,6 @@ class ImportController extends Controller {
 
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
-
                 if(substr_count($data[3], '-') === 0) {
                     $transaction_data = [
                         'user_id' => $user_id,
@@ -78,10 +77,10 @@ class ImportController extends Controller {
                         'occurred_at' => $data[0]
                     ];
                 }
-            }
 
-            $transaction = Transaction::create($transaction_data);
-            array_push($transaction_ids, $transaction->id);
+                $transaction = Transaction::create($transaction_data);
+                array_push($transaction_ids, $transaction->id);
+            }
 
             $index++;
         }
