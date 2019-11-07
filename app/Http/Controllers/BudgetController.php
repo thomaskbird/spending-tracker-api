@@ -187,8 +187,8 @@ class BudgetController extends Controller {
 
             array_push($data, [
                 'name' => $budget['title'],
-                'limit' => $budget['amount'],
-                'current' => $amount
+                'limit' => number_format($budget['amount'], 2),
+                'current' => number_format($amount, 2)
             ]);
         }
 
