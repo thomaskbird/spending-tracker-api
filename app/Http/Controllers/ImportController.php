@@ -18,6 +18,12 @@ class ImportController extends Controller {
 
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
+        // todo: check if first line is header
+        // todo: iterate through file and create transactions
+        // todo: count the number of total transactions imported
+        // todo: record all of the transactions ids created.
+        // todo: modify transactions table to track what is in queue and what has been fully imported.
+
         $import = Import::create([
             'user_id' => $user_id,
             'type' => $input['sourceType'],
@@ -26,11 +32,22 @@ class ImportController extends Controller {
             'record_ids' => ''
         ]);
 
-        return response(json_encode([
-            'status' => true,
-            'data' => [
-                'import' => $import
-            ]
-        ]));
+        $this->extract_and_insert_rows($import);
+
+//        return response(json_encode([
+//            'status' => true,
+//            'data' => [
+//                'import' => $import
+//            ]
+//        ]));
+    }
+
+    private function extract_and_insert_rows($import) {
+        echo storage_path('imports') .' - '. $import->filename; exit;
+        $file = fopen(storage_path('imports'))
+    }
+
+    private function extract_rows() {
+
     }
 }
