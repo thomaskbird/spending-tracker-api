@@ -87,7 +87,7 @@ class ImportController extends Controller {
         ini_set('auto_detect_line_endings',FALSE);
 
         return [
-            'record_ids' => $transaction_ids,
+            'record_ids' => rtrim($transaction_ids, ', '),
             'records' => $index - 1,
         ];
     }
