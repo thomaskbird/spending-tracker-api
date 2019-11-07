@@ -69,6 +69,8 @@ route::middleware(['apiToken'])->group(function() {
     route::get('update/{model}/{target_id}/{key}/{val}', ['as' => 'single_model_update', 'uses' => 'UtilityController@single_model_update']);
 
     route::post('upload/{type}', ['as' => 'upload_file', 'uses' => 'UploadController@upload_file']);
+
+    route::get('visualizations/budgets/{start}/{end}', ['as' => 'visualization_budgets', 'uses' => 'BudgetController@visualization_budgets']);
 });
 
 /**

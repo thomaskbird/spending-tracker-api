@@ -151,4 +151,35 @@ class BudgetController extends Controller {
 
         return $transactions;
     }
+
+    public function visualization_budgets(Request $request, $start, $end) {
+        $user_id = $this->getUserIdFromToken($request->bearerToken());
+        $start = $start .' 00:00:00';
+        $end = $end .' 23:59:59';
+        $data = [];
+
+        $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
+            // need to add a filter for only the current month
+            $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
+                $query->whereRaw(
+                    'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
+                    [$user_id, $start, $end]
+                );
+            }]);
+        }])->where('user_id', $user_id)->get()->toArray();
+print_r($budgets); exit;
+        foreach($budgets as $budget) {
+
+        }
+
+//        [
+//            {name: "Auto", limit: 4000, current: 2400},
+
+//        return response(json_encode([
+//            'status' => true,
+//            'data' => [
+//                'budgets' => $budgets
+//            ]
+//        ]));
+    }
 }
