@@ -79,7 +79,7 @@ class ImportController extends Controller {
                 }
 
                 $transaction = Transaction::create($transaction_data);
-                $transaction_ids = $transaction->id .', ';
+                $transaction_ids += $transaction->id .', ';
             }
 
             $index++;
