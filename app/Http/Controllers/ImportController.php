@@ -52,7 +52,7 @@ class ImportController extends Controller {
         $index = 0;
         ini_set('auto_detect_line_endings',TRUE);
         $handle = fopen(storage_path('imports') .'/'. $import->filename, 'r');
-        $transaction_ids = [];
+        $transaction_ids = '';
 
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
@@ -79,7 +79,7 @@ class ImportController extends Controller {
                 }
 
                 $transaction = Transaction::create($transaction_data);
-                array_push($transaction_ids, $transaction->id);
+                $transaction_ids = $transaction->id .', ';
             }
 
             $index++;
