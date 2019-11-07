@@ -43,10 +43,16 @@ class ImportController extends Controller {
     }
 
     private function extract_and_insert_rows($import) {
+        $index = 0;
         ini_set('auto_detect_line_endings',TRUE);
         $handle = fopen(storage_path('imports') .'/'. $import->filename, 'r');
+
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
-            print_r($data);
+            if($index !== 0) {
+                print_r($data);
+            }
+
+            $index++;
         }
         ini_set('auto_detect_line_endings',FALSE);
     }
