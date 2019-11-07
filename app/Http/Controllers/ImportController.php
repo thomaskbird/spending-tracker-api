@@ -57,13 +57,14 @@ class ImportController extends Controller {
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
                 $reformatted_timestamp = date('Y-m-d h:i:s', strtotime($data[0]));
+                $amount_formatted = floatval($data[3]);
 
                 if(substr_count($data[3], '-') === 0) {
                     $transaction_data = [
                         'user_id' => $user_id,
                         'title' => substr($data[2], 0, 20),
                         'description' => $data[2],
-                        'amount' => $data[3],
+                        'amount' => $amount_formatted,
                         'type' => 'income',
                         'status' => 'queued',
                         'occurred_at' => $reformatted_timestamp
@@ -73,7 +74,7 @@ class ImportController extends Controller {
                         'user_id' => $user_id,
                         'title' => substr($data[2], 0, 20),
                         'description' => $data[2],
-                        'amount' => $data[3],
+                        'amount' => $amount_formatted,
                         'type' => 'expense',
                         'status' => 'queued',
                         'occurred_at' => $reformatted_timestamp
