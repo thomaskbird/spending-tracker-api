@@ -58,7 +58,7 @@ class ImportController extends Controller {
             if($index !== 0) {
                 $external = $data[0];
                 $format = 'd/m/y';
-                $dateobj = DateTime::createFromFormat($format, $external);
+                $dateobj = \DateTime::createFromFormat($format, $external);
                 $iso_datetime = $dateobj->format(Datetime::ATOM);
 
                 if(substr_count($data[3], '-') === 0) {
