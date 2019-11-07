@@ -179,7 +179,7 @@ class BudgetController extends Controller {
         return response(json_encode([
             'status' => true,
             'data' => [
-                'budgets' => $budgets
+                'budgets' => $data
             ]
         ]));
     }
