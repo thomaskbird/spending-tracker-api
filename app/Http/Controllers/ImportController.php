@@ -44,7 +44,7 @@ class ImportController extends Controller {
 
     private function extract_and_insert_rows($import) {
         echo storage_path('imports') .' - '. $import->filename; exit;
-        $file = fopen(storage_path('imports'))
+        $file = fopen(storage_path('imports'));
     }
 
     private function extract_rows() {
