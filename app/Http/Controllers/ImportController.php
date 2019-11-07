@@ -56,10 +56,7 @@ class ImportController extends Controller {
 
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
-                $external = $data[0];
-                $format = 'd/m/y';
-                $dateobj = \DateTime::createFromFormat($format, $external);
-                $iso_datetime = $dateobj->format(Datetime::ATOM);
+                $reformatted_timestamp = date('Y-m-d h:i:s', strtotime($data[0]));
 
                 if(substr_count($data[3], '-') === 0) {
                     $transaction_data = [
@@ -69,7 +66,7 @@ class ImportController extends Controller {
                         'amount' => $data[3],
                         'type' => 'income',
                         'status' => 'queued',
-                        'occurred_at' => $iso_datetime
+                        'occurred_at' => $reformatted_timestamp
                     ];
                 } else {
                     $transaction_data = [
@@ -79,7 +76,7 @@ class ImportController extends Controller {
                         'amount' => $data[3],
                         'type' => 'expense',
                         'status' => 'queued',
-                        'occurred_at' => $iso_datetime
+                        'occurred_at' => $reformatted_timestamp
                     ];
                 }
 
