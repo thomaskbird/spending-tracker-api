@@ -12,18 +12,13 @@ class ImportController extends Controller {
     public function action_import(Request $request) {
         $input = $request->all();
 
+        $source_type = $input['sourceType'];
         $file = $request->file('file');
         $filename = $file->getClientOriginalName();
         $fully_qualified_path = storage_path('imports');
         $file->move($fully_qualified_path, $filename);
 
         $user_id = $this->getUserIdFromToken($request->bearerToken());
-
-        // todo: check if first line is header
-        // todo: iterate through file and create transactions
-        // todo: count the number of total transactions imported
-        // todo: record all of the transactions ids created.
-        // todo: modify transactions table to track what is in queue and what has been fully imported.
 
         $import = Import::create([
             'user_id' => $user_id,
@@ -33,7 +28,7 @@ class ImportController extends Controller {
             'record_ids' => ''
         ]);
 
-        $insertions = $this->extract_and_insert_rows($import, $user_id);
+        $insertions = $this->extract_and_insert_rows($import, $user_id, $source_type);
 
         $import->records = $insertions['records'];
         $import->record_ids = $insertions['record_ids'];
@@ -48,7 +43,7 @@ class ImportController extends Controller {
         ]));
     }
 
-    private function extract_and_insert_rows($import, $user_id) {
+    private function extract_and_insert_rows($import, $user_id, $source_type) {
         $index = 0;
         ini_set('auto_detect_line_endings',TRUE);
         $handle = fopen(storage_path('imports') .'/'. $import->filename, 'r');
@@ -56,29 +51,14 @@ class ImportController extends Controller {
 
         while ( ($data = fgetcsv($handle) ) !== FALSE ) {
             if($index !== 0) {
-                $reformatted_timestamp = date('Y-m-d h:i:s', strtotime($data[0]));
-                $amount_formatted = floatval(str_replace('-', '', $data[3]));
 
-                if(substr_count($data[3], '-') === 0) {
-                    $transaction_data = [
-                        'user_id' => $user_id,
-                        'title' => substr($data[2], 0, 20),
-                        'description' => $data[2],
-                        'amount' => $amount_formatted,
-                        'type' => 'income',
-                        'status' => 'queued',
-                        'occurred_at' => $reformatted_timestamp
-                    ];
-                } else {
-                    $transaction_data = [
-                        'user_id' => $user_id,
-                        'title' => substr($data[2], 0, 20),
-                        'description' => $data[2],
-                        'amount' => $amount_formatted,
-                        'type' => 'expense',
-                        'status' => 'queued',
-                        'occurred_at' => $reformatted_timestamp
-                    ];
+                switch($source_type) {
+                    case 'discover':
+                        $transaction_data = $this->map_discover($data, $user_id);
+                    break;
+                    case 'chase':
+                        $transaction_data = $this->map_chase($data, $user_id);
+                    break;
                 }
 
                 $transaction = Transaction::create($transaction_data);
@@ -93,5 +73,63 @@ class ImportController extends Controller {
             'record_ids' => ltrim($transaction_ids, ', '),
             'records' => $index - 1,
         ];
+    }
+
+    private function map_chase($data, $user_id) {
+        $reformatted_timestamp = date('Y-m-d h:i:s', strtotime($data[1]));
+        $amount_formatted = floatval(str_replace('-', '', $data[3]));
+
+        if(substr_count($data[3], '-') === 0) {
+            $transaction_data = [
+                'user_id' => $user_id,
+                'title' => substr($data[2], 0, 20),
+                'description' => $data[2],
+                'amount' => $amount_formatted,
+                'type' => 'income',
+                'status' => 'queued',
+                'occurred_at' => $reformatted_timestamp
+            ];
+        } else {
+            $transaction_data = [
+                'user_id' => $user_id,
+                'title' => substr($data[2], 0, 20),
+                'description' => $data[2],
+                'amount' => $amount_formatted,
+                'type' => 'expense',
+                'status' => 'queued',
+                'occurred_at' => $reformatted_timestamp
+            ];
+        }
+
+        return $transaction_data;
+    }
+
+    private function map_discover($data, $user_id) {
+        $reformatted_timestamp = date('Y-m-d h:i:s', strtotime($data[0]));
+        $amount_formatted = floatval(str_replace('-', '', $data[3]));
+
+        if(substr_count($data[3], '-') === 0) {
+            $transaction_data = [
+                'user_id' => $user_id,
+                'title' => substr($data[2], 0, 20),
+                'description' => $data[2],
+                'amount' => $amount_formatted,
+                'type' => 'income',
+                'status' => 'queued',
+                'occurred_at' => $reformatted_timestamp
+            ];
+        } else {
+            $transaction_data = [
+                'user_id' => $user_id,
+                'title' => substr($data[2], 0, 20),
+                'description' => $data[2],
+                'amount' => $amount_formatted,
+                'type' => 'expense',
+                'status' => 'queued',
+                'occurred_at' => $reformatted_timestamp
+            ];
+        }
+
+        return $transaction_data;
     }
 }
