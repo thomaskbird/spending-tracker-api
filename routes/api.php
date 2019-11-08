@@ -41,7 +41,8 @@ route::middleware(['apiToken'])->group(function() {
     // Budget routes
     route::get('budgets/remove/{id}', ['as' => 'budget_remove', 'uses' => 'BudgetController@budget_remove']);
     route::get('budgets/{id}/{start}/{end}', ['as' => 'budget_single', 'uses' => 'BudgetController@budget_single']);
-    route::get('budgets/{start}/{end}', ['as' => 'budget_list', 'uses' => 'BudgetController@budget_list']);
+    route::get('budgets/{start}/{end}', ['as' => 'budget_list_with_transactions', 'uses' => 'BudgetController@budget_list_with_transactions']);
+    route::get('budgets', ['as' => 'budgets_list', 'uses' => 'BudgetController@budgets_list']);
     route::post('budgets', ['as' => 'budget_create', 'uses' => 'BudgetController@budget_create']);
     route::post('budgets/{id}', ['as' => 'budget_edit', 'uses' => 'BudgetController@budget_edit']);
 
