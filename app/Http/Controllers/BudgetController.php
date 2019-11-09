@@ -214,6 +214,7 @@ class BudgetController extends Controller {
             }
 
             array_push($data, [
+                'id' => $budget['id'],
                 'name' => $budget['title'],
                 'limit' => $budget['amount'],
                 'current' => $amount
