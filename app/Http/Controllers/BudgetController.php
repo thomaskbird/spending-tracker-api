@@ -232,8 +232,18 @@ class BudgetController extends Controller {
     public function visualization_budget(Request $request, $id, $months) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
+        $now = Carbon::now();
         $start = Carbon::now()->subMonths($months);
         $end = Carbon::now()->endOfMonth();
+
+        return [
+            'id' => $id,
+            'months' => $months,
+            'now' => $now,
+            'start' => $start,
+            'end' => $end
+        ];
+
 
         $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
             $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
