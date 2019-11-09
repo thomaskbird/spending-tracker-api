@@ -43,6 +43,7 @@ route::middleware(['apiToken'])->group(function() {
     route::post('alert', ['as' => 'create_alert', 'uses' => 'AlertController@create_alert']);
 
     // Budget routes
+    route::get('budgets/alerts', ['as' => 'budgets_list_with_alerts', 'uses' => 'BudgetController@budgets_list_with_alerts']);
     route::get('budgets/remove/{id}', ['as' => 'budget_remove', 'uses' => 'BudgetController@budget_remove']);
     route::get('budgets/{id}/{start}/{end}', ['as' => 'budget_single', 'uses' => 'BudgetController@budget_single']);
     route::get('budgets/{start}/{end}', ['as' => 'budget_list_with_transactions', 'uses' => 'BudgetController@budget_list_with_transactions']);

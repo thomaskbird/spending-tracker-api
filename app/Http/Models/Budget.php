@@ -15,4 +15,8 @@ class Budget extends Model {
             'taggable'
         );
     }
+
+    public function alert() {
+        return $this->hasOne('App\Http\Models\Alert');
+    }
 }

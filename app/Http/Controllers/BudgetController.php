@@ -124,6 +124,19 @@ class BudgetController extends Controller {
         ]));
     }
 
+    public function budgets_list_with_alerts(Request $request) {
+        $user_id = $this->getUserIdFromToken($request->bearerToken());
+
+        $budgets = Budget::with('alert')->where('user_id', $user_id)->get();
+
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'budgets' => $budgets
+            ]
+        ]));
+    }
+
     public function budget_list_with_transactions(Request $request, $start, $end) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
         $start = $start .' 00:00:00';
