@@ -235,7 +235,7 @@ class BudgetController extends Controller {
         // todo: determine start and end range
 
         $now = Carbon::now();
-        $start = Carbon::now()->subtract($months, 'month');
+        $start = Carbon::now()->subMonths($months);
         $end = Carbon::now()->endOfMonth();
 
         return [
