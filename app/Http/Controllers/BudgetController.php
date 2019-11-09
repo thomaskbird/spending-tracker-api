@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -231,20 +232,28 @@ class BudgetController extends Controller {
     public function visualization_budget(Request $request, $id, $months) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
-        return [
-            'id' => $id,
-            'months' => $months
-        ];
         // todo: determine start and end range
 
+        $now = CarbonImmutable::now();
+        $start = $now->subtract($months, 'month');
+        $end = $now->endOfMonth();
 
-//        $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
-//            $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
-//                $query->whereRaw(
-//                    'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
-//                    [$user_id, $start, $end]
-//                );
-//            }]);
-//        }])->find('id', $id)->toArray();
+        return [
+            'id' => $id,
+            'months' => $months,
+            'now' => $now,
+            'start' => $start,
+            'end' => $end
+        ];
+
+
+        $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
+            $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
+                $query->whereRaw(
+                    'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
+                    [$user_id, $start, $end]
+                );
+            }]);
+        }])->find('id', $id)->toArray();
     }
 }
