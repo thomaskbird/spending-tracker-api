@@ -228,4 +228,8 @@ class BudgetController extends Controller {
             ]
         ]));
     }
+
+    public function visualization_budget($months) {
+
+    }
 }

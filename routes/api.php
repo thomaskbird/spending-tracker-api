@@ -80,6 +80,7 @@ route::middleware(['apiToken'])->group(function() {
     route::post('upload/{type}', ['as' => 'upload_file', 'uses' => 'UploadController@upload_file']);
 
     route::get('visualizations/budgets/{start}/{end}', ['as' => 'visualization_budgets', 'uses' => 'BudgetController@visualization_budgets']);
+    route::get('visualizations/budget/{id}/{months}', ['as' => 'visualization_budget', 'uses' => 'BudgetController@visualization_budget']);
 });
 
 /**
