@@ -187,7 +187,6 @@ class BudgetController extends Controller {
         $data = [];
 
         $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
-            // need to add a filter for only the current month
             $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
                 $query->whereRaw(
                     'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
@@ -229,7 +228,23 @@ class BudgetController extends Controller {
         ]));
     }
 
-    public function visualization_budget($months) {
+    public function visualization_budget(Request $request, $id, $months) {
+        $user_id = $this->getUserIdFromToken($request->bearerToken());
 
+        return [
+            'id' => $id,
+            'months' => $months
+        ];
+        // todo: determine start and end range
+
+
+//        $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
+//            $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
+//                $query->whereRaw(
+//                    'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
+//                    [$user_id, $start, $end]
+//                );
+//            }]);
+//        }])->find('id', $id)->toArray();
     }
 }
