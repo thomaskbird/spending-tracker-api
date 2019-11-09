@@ -244,7 +244,7 @@ class BudgetController extends Controller {
                         'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
                         [$user_id, $start, $end]
                     )
-                    ->groupBy(DB::raw('YEAR(created_at) DESC, MONTH(created_at) DESC'));
+                    ->groupBy(DB::raw('YEAR(occurred_at) DESC, MONTH(occurred_at) DESC'));
             }]);
         }])->find($id);
 
