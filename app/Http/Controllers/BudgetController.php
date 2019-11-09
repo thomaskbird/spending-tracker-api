@@ -236,16 +236,7 @@ class BudgetController extends Controller {
         $start = Carbon::now()->subMonths($months)->startOfMonth()->toDateTimeString();
         $end = Carbon::now()->endOfMonth()->toDateTimeString();
 
-        return [
-            'id' => $id,
-            'months' => $months,
-            'now' => $now,
-            'start' => $start,
-            'end' => $end
-        ];
-
-
-        $budgets = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
+        $budget = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
             $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
                 $query->whereRaw(
                     'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
@@ -253,5 +244,15 @@ class BudgetController extends Controller {
                 );
             }]);
         }])->find('id', $id)->toArray();
+
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'start' => $start,
+                'end' => $end,
+                'period' => $months,
+                'budget' => $budget
+            ]
+        ]));
     }
 }
