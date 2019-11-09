@@ -232,9 +232,9 @@ class BudgetController extends Controller {
     public function visualization_budget(Request $request, $id, $months) {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
-        $now = Carbon::now();
-        $start = Carbon::now()->subMonths($months);
-        $end = Carbon::now()->endOfMonth();
+        $now = Carbon::now()->toDateTimeString();
+        $start = Carbon::now()->subMonths($months)->toDateTimeString();
+        $end = Carbon::now()->endOfMonth()->toDateTimeString();
 
         return [
             'id' => $id,
