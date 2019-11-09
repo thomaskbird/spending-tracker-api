@@ -233,7 +233,7 @@ class BudgetController extends Controller {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $now = Carbon::now()->toDateTimeString();
-        $start = Carbon::now()->subMonths($months)->toDateTimeString();
+        $start = Carbon::now()->subMonths($months)->startOfMonth()->toDateTimeString();
         $end = Carbon::now()->endOfMonth()->toDateTimeString();
 
         return [
