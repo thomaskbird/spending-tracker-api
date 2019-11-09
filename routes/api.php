@@ -9,6 +9,7 @@ if($env === 'dev') {
 header('Access-Control-Allow-Origin: '. $allowed_env);
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, User-Agent, authorization");
 
+date_default_timezone_set('America/Detroit');
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
