@@ -240,7 +240,7 @@ class BudgetController extends Controller {
         $budget = Budget::with(['tags' => function($query) use ($user_id, $start, $end) {
             $query->with(['transactions' => function($query) use ($user_id, $start, $end) {
                 $query
-                    ->select(DB::raw('SUM(amount) as total'))
+                    ->select(DB::raw('SUM(transaction.amount) as total'))
                     ->whereRaw(
                         'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
                         [$user_id, $start, $end]
