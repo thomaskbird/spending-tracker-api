@@ -243,7 +243,7 @@ class BudgetController extends Controller {
                     [$user_id, $start, $end]
                 );
             }]);
-        }])->find('id', $id)->toArray();
+        }])->find($id);
 
         return response(json_encode([
             'status' => true,
