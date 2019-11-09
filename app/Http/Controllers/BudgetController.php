@@ -241,7 +241,9 @@ class BudgetController extends Controller {
                 $query->whereRaw(
                     'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
                     [$user_id, $start, $end]
-                );
+                )
+                    ->select(DB::raw('SUM(amount) as total'))
+                    ->groupBy(DB::raw('YEAR(created_at) DESC, MONTH(created_at) DESC'));
             }]);
         }])->find($id);
 
