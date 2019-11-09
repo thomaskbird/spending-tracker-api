@@ -43,7 +43,7 @@ class AlertController extends Controller {
         if($alert) {
             $alert->delete();
 
-            response(json_encode([
+            return response(json_encode([
                 'status' => true,
                 'data' => [
                     'msgs' => [
@@ -52,7 +52,7 @@ class AlertController extends Controller {
                 ]
             ]));
         } else {
-            response(json_encode([
+            return response(json_encode([
                 'status' => false,
                 'data' => [
                     'msgs' => [
