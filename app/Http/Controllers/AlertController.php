@@ -28,7 +28,7 @@ class AlertController extends Controller {
                 'threshold' => $input['threshold']
             ]);
 
-            response(json_encode([
+            return response(json_encode([
                 'status' => true,
                 'data' => [
                     'alert' => $alert
