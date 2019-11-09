@@ -38,6 +38,10 @@ route::middleware(['apiToken'])->group(function() {
     // Account user routes
     route::post('account/user/add', ['as' => 'account_user_add', 'uses' => 'AccountController@account_user_add']);
 
+    // Alert routes
+    route::get('alert/remove/{id}', ['as' => 'remove_alert', 'uses' => 'AlertController@remove_alert']);
+    route::post('alert', ['as' => 'create_alert', 'uses' => 'AlertController@create_alert']);
+
     // Budget routes
     route::get('budgets/remove/{id}', ['as' => 'budget_remove', 'uses' => 'BudgetController@budget_remove']);
     route::get('budgets/{id}/{start}/{end}', ['as' => 'budget_single', 'uses' => 'BudgetController@budget_single']);
