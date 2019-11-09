@@ -12,7 +12,8 @@ class AlertController extends Controller {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $validator = Validator::make($input, [
-            'threshold' => 'required'
+            'threshold' => 'required',
+            'budget_id' => 'required'
         ]);
 
         if($validator->fails()) {
@@ -27,14 +28,12 @@ class AlertController extends Controller {
                 'threshold' => $input['threshold']
             ]);
 
-            $response = [
+            response(json_encode([
                 'status' => true,
                 'data' => [
                     'alert' => $alert
                 ]
-            ];
-
-            response(json_encode($response));
+            ]));
         }
     }
 
