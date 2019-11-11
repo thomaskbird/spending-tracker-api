@@ -331,4 +331,17 @@ class TransactionController extends Controller {
             }
         }
     }
+
+    public function dequeue_transaction($id) {
+        $transaction = Transaction::find($id);
+        $transaction->status = 'new';
+        $transaction->save();
+
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'transaction' => $transaction
+            ]
+        ]));
+    }
 }

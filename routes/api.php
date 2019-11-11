@@ -71,6 +71,7 @@ route::middleware(['apiToken'])->group(function() {
     route::post('transactions/create', ['as' => 'transactions_action_create', 'uses' => 'TransactionController@action_create']);
     route::post('transactions/edit/{id}', ['as' => 'transactions_action_edit', 'uses' => 'TransactionController@action_edit']);
 
+    route::get('transaction/dequeue/{id}', ['as' => 'dequeue_transaction', 'uses' => 'TransactionController@dequeue_transaction']);
     route::get('transaction/tags/{transaction_id}', ['as' => 'transaction_tags', 'uses' => 'TransactionController@transaction_tags']);
     route::get('transactions/remove/{id}', ['as' => 'transactions_action_remove', 'uses' => 'TransactionController@action_remove']);
     route::get('transactions/{id}', ['as' => 'transactions_single', 'uses' => 'TransactionController@single'])->where('id', '[0-9]+');
