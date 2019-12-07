@@ -345,12 +345,29 @@ class TransactionController extends Controller {
         ]));
     }
 
-    public function mark_bill(Request $request, $id) {
+    public function mark_bill(Request $request) {
         $input = $request->all();
 
         $transaction = Transaction::find($input['id']);
         $transaction->is_bill = $input['is_bill'];
 
         $transaction->save();
+
+        if($transaction->recurring_id !== 0) {
+            $transactions = Transaction::where('recurring_id', $transaction->recurring_id)->get();
+            foreach($transactions as $transaction) {
+                $transaction->is_bill = $input['is_bill'];
+                $transaction->save();
+            }
+        }
+
+        $is_recurring = Transaction::where('recurring_id', $transaction->id)->get();
+
+        if($is_recurring->count()) {
+            foreach($is_recurring as $item) {
+                $transaction->is_bill = $input['is_bill'];
+                $transaction->save();
+            }
+        }
     }
 }
