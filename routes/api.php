@@ -70,6 +70,7 @@ route::middleware(['apiToken'])->group(function() {
     // Transaction routes
     route::post('transactions/create', ['as' => 'transactions_action_create', 'uses' => 'TransactionController@action_create']);
     route::post('transactions/edit/{id}', ['as' => 'transactions_action_edit', 'uses' => 'TransactionController@action_edit']);
+    route::post('transaction/markbill/{id}', ['as' => 'mark_bill', 'uses' => 'TransactionController@mark_bill']);
 
     route::get('transaction/dequeue/{id}', ['as' => 'dequeue_transaction', 'uses' => 'TransactionController@dequeue_transaction']);
     route::get('transaction/tags/{transaction_id}', ['as' => 'transaction_tags', 'uses' => 'TransactionController@transaction_tags']);

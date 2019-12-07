@@ -344,4 +344,13 @@ class TransactionController extends Controller {
             ]
         ]));
     }
+
+    public function mark_bill(Request $request, $id) {
+        $input = $request->all();
+
+        $transaction = Transaction::find($input['id']);
+        $transaction->is_bill = $input['is_bill'];
+
+        $transaction->save();
+    }
 }
