@@ -125,7 +125,7 @@ class ImportController extends Controller {
                     'title' => substr($data[2], 0, 20),
                     'description' => $data[2],
                     'amount' => $amount_formatted,
-                    'type' => 'income',
+                    'type' => 'expense',
                     'status' => 'queued',
                     'occurred_at' => $reformatted_timestamp
                 ];
@@ -135,7 +135,7 @@ class ImportController extends Controller {
                     'title' => substr($data[2], 0, 20),
                     'description' => $data[2],
                     'amount' => $amount_formatted,
-                    'type' => 'expense',
+                    'type' => 'income',
                     'status' => 'queued',
                     'occurred_at' => $reformatted_timestamp
                 ];
