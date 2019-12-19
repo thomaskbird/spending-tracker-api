@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Models\Taggable;
 use Illuminate\Http\Request;
 use Validator;
+use DB;
 
 use App\Http\Models\Tag;
 
