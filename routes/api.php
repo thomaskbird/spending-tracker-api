@@ -56,8 +56,8 @@ route::middleware(['apiToken'])->group(function() {
     route::post('import', ['as' => 'action_import', 'uses' => 'ImportController@action_import']);
 
     // Tag routes
-    route::get('tags', ['as' => 'view', 'uses' => 'TagController@view']);
     route::get('tags/remove/{id}', ['as' => 'action_remove', 'uses' => 'TagController@action_remove']);
+    route::get('tags/{start}/{end}', ['as' => 'view', 'uses' => 'TagController@view']);
     route::get('tags/{id}', ['as' => 'single', 'uses' => 'TagController@single']);
     route::post('tags/{id}', ['as' => 'action_edit', 'uses' => 'TagController@action_edit']);
     route::post('tags', ['as' => 'action_create', 'uses' => 'TagController@action_create']);
