@@ -18,6 +18,6 @@ class Tag extends Model {
     }
 
     public function transactions() {
-        return $this->hasManyThrough('App\Http\Models\Transaction', 'taggables');
+        return $this->hasManyThrough('App\Http\Models\Transaction', 'App\Http\Models\Taggable');
     }
 }
