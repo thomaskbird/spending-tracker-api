@@ -113,7 +113,6 @@ class TagController extends Controller {
         $start = $start .' 00:00:00';
         $end = $end .' 23:59:59';
 
-        // todo: this query never returns any transactions
         $tags = Tag::with(['transactions' => function($query) use ($user_id, $start, $end) {
             $query
                 ->whereRaw(
