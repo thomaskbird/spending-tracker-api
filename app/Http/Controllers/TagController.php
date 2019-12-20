@@ -114,7 +114,7 @@ class TagController extends Controller {
         $end = $end .' 23:59:59';
 
         // todo: this query never returns any transactions
-        $tags = Tag::with('transactions', function($query) use ($user_id, $start, $end) {
+        $tags = Tag::whereHas('transactions', function($query) use ($user_id, $start, $end) {
             $query
                 ->whereRaw(
                     'user_id, occurred_at >= ? AND occurred_at <= ?',
