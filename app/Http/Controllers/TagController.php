@@ -119,7 +119,7 @@ class TagController extends Controller {
                 ->whereRaw(
                     'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
                     [$user_id, $start, $end]
-                );
+                )->get();
         }])->where('user_id', $user_id)->get();
 
         return response(json_encode([
