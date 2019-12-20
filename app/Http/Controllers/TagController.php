@@ -114,11 +114,11 @@ class TagController extends Controller {
         $end = $end .' 23:59:59';
 
         // todo: this query never returns any transactions
-        $tags = Tag::with(['transactions' => function($query) use ($start, $end) {
-            $query
+        $tags = Tag::with(['transactions' => function($query) use ($user_id, $start, $end) {
+            return $query
                 ->whereRaw(
-                    'occurred_at >= ? AND occurred_at <= ?',
-                    [$start, $end]
+                    'user_id, occurred_at >= ? AND occurred_at <= ?',
+                    [$user_id, $start, $end]
                 )
                 ->groupBy(DB::raw('YEAR(occurred_at) DESC, MONTH(occurred_at) DESC'));
         }])->where('user_id', $user_id)->get();
