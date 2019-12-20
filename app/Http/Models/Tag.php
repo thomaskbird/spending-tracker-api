@@ -18,6 +18,6 @@ class Tag extends Model {
     }
 
     public function transactions() {
-        return $this->morphToMany('App\Http\Models\Transaction', 'taggable', 'taggables', 'taggable_id');
+        return $this->morphToMany('App\Http\Models\Transaction', 'taggable', 'taggables', 'taggable_id', 'tag_id');
     }
 }
