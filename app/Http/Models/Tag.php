@@ -22,7 +22,8 @@ class Tag extends Model {
             'App\Http\Models\Transaction',
             'taggable',
             'taggables',
-            'tag_id'
+            'tag_id',
+            'taggable_id'
         );
     }
 }
