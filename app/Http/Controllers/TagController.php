@@ -119,8 +119,7 @@ class TagController extends Controller {
                 ->whereRaw(
                     'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
                     [$user_id, $start, $end]
-                )
-                ->groupBy(DB::raw('YEAR(occurred_at) DESC, MONTH(occurred_at) DESC'));
+                );
         }])->where('user_id', $user_id)->get();
 
         return response(json_encode([
