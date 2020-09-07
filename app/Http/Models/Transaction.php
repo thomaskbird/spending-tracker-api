@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model {
     protected $fillable = [
-        'user_id', 'recurring_id', 'title', 'description', 'amount', 'type', 'is_bill', 'status', 'queued', 'occurred_at'
+        'user_id', 'import_id', 'recurring_id', 'title', 'description', 'amount', 'type', 'is_bill', 'status', 'queued', 'occurred_at'
     ];
 
     public function recurring() {
@@ -18,5 +18,9 @@ class Transaction extends Model {
             'App\Http\Models\Tag',
             'taggable'
         );
+    }
+
+    public function import() {
+        return $this->hasOne('App\Http\Models\Import');
     }
 }
