@@ -21,6 +21,6 @@ class Transaction extends Model {
     }
 
     public function import() {
-        return $this->hasOne('App\Http\Models\Import', 'id');
+        return $this->hasOne('App\Http\Models\Import', 'id', 'import_id');
     }
 }
