@@ -9,6 +9,18 @@ use Illuminate\Http\Request;
 
 class ImportController extends Controller {
 
+    public function imports_list(Request $request) {
+        $user_id = $this->getUserIdFromToken($request->bearerToken());
+        $imports = Import::where('user_id', $user_id)->orderBy('created_at', 'desc')->get();
+
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'imports' => $imports
+            ]
+        ]));
+    }
+
     public function action_import(Request $request) {
         $input = $request->all();
 
