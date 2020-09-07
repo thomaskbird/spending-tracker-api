@@ -283,7 +283,7 @@ class TransactionController extends Controller {
         $start = $start .' 00:00:00';
         $end = $end .' 23:59:59';
 
-        $transactions = Transaction::with(['recurring', 'tags'])
+        $transactions = Transaction::with(['recurring', 'tags', 'import'])
             ->whereRaw(
                 'user_id = ? AND occurred_at >= ? AND occurred_at <= ?',
                 [$user_id, $start, $end]
