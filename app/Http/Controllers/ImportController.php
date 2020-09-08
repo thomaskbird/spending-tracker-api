@@ -22,7 +22,7 @@ class ImportController extends Controller {
     }
 
     public function imports_single($id) {
-        $import = Import::find($id)->get();
+        $import = Import::find($id);
 
         return response(json_encode([
             'status' => true,
