@@ -54,6 +54,7 @@ route::middleware(['apiToken'])->group(function() {
 
     // Import routes
     route::get('imports', ['as' => 'imports_list', 'uses' => 'ImportController@imports_list']);
+    route::get('imports/{id}', ['as' => 'imports_single', 'uses' => 'ImportController@imports_single']);
     route::post('import', ['as' => 'action_import', 'uses' => 'ImportController@action_import']);
 
     // Tag routes

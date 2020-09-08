@@ -21,6 +21,17 @@ class ImportController extends Controller {
         ]));
     }
 
+    public function imports_single($id) {
+        $import = Import::find($id)->get();
+
+        return response(json_encode([
+            'status' => true,
+            'data' => [
+                'import' => $import
+            ]
+        ]));
+    }
+
     public function action_import(Request $request) {
         $input = $request->all();
 
