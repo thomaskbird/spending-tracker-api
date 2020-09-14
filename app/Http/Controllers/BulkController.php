@@ -9,6 +9,6 @@ class BulkController extends Controller {
     public function bulk_transaction_remove(Request $request) {
         $transaction_ids = $request->input['transactionIds'];
 
-        print_r($transaction_ids);
+        return $transaction_ids;
     }
 }
