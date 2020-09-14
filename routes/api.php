@@ -53,7 +53,7 @@ route::middleware(['apiToken'])->group(function() {
     route::post('budgets/{id}', ['as' => 'budget_edit', 'uses' => 'BudgetController@budget_edit']);
 
     // Bulk routes
-    route::post('bulk/transaction/remove', ['as' => 'bulk_transaction_remove', 'uses' => 'BulkController@bulk_transaction_remove']);
+    route::post('bulk/transactions/remove', ['as' => 'bulk_transaction_remove', 'uses' => 'BulkController@bulk_transaction_remove']);
 
     // Import routes
     route::get('imports', ['as' => 'imports_list', 'uses' => 'ImportController@imports_list']);
