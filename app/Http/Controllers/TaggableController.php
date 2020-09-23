@@ -11,13 +11,13 @@ class TaggableController extends Controller {
 
     public function get_tags_with_selected_status(Request $request) {
         $input = $request->all();
-        print_r($input); exit;
+        $hasTransaction = $request->has('taggable_id') && $request->has('taggable_type');
         $tags_formatted = [];
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $tags = Tag::where('user_id', $user_id)->orderBy('title', 'asc')->get()->toArray();
 
-        if($input['taggable_id'] && $input['taggable_type']) {
+        if($hasTransaction) {
             $relation_ids = Taggable::whereRaw('taggable_id = ? AND taggable_type = ?', [$input['taggable_id'], $input['taggable_type']])->pluck('tag_id')->toArray();
 
             foreach($tags as $tag) {
@@ -35,7 +35,7 @@ class TaggableController extends Controller {
         return response(json_encode([
             'status' => true,
             'data' => [
-                'tags' => $input['taggable_id'] && $input['taggable_type'] ? $tags_formatted : $tags
+                'tags' => $hasTransaction ? $tags_formatted : $tags
             ]
         ]));
     }
