@@ -15,23 +15,26 @@ class TaggableController extends Controller {
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
         $tags = Tag::where('user_id', $user_id)->orderBy('title', 'asc')->get()->toArray();
-        $relation_ids = Taggable::whereRaw('taggable_id = ? AND taggable_type = ?', [$input['taggable_id'], $input['taggable_type']])->pluck('tag_id')->toArray();
 
-        foreach($tags as $tag) {
-            if(in_array($tag['id'], $relation_ids)) {
-                $tag['selected'] = true;
-            } else {
-                $tag['selected'] = false;
+        if($input['taggable_id'] && $input['taggable_type']) {
+            $relation_ids = Taggable::whereRaw('taggable_id = ? AND taggable_type = ?', [$input['taggable_id'], $input['taggable_type']])->pluck('tag_id')->toArray();
+
+            foreach($tags as $tag) {
+                if(in_array($tag['id'], $relation_ids)) {
+                    $tag['selected'] = true;
+                } else {
+                    $tag['selected'] = false;
+                }
+
+                array_push($tags_formatted, $tag);
             }
-
-            array_push($tags_formatted, $tag);
         }
 
 
         return response(json_encode([
             'status' => true,
             'data' => [
-                'tags' => $tags_formatted
+                'tags' => $input['taggable_id'] && $input['taggable_type'] ? $tags_formatted : $tags
             ]
         ]));
     }
