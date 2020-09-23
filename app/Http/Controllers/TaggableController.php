@@ -11,6 +11,7 @@ class TaggableController extends Controller {
 
     public function get_tags_with_selected_status(Request $request) {
         $input = $request->all();
+        print_r($input); exit;
         $tags_formatted = [];
         $user_id = $this->getUserIdFromToken($request->bearerToken());
 
